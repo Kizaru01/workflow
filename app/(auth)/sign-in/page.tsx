@@ -1,7 +1,16 @@
-import React from "react";
+"use client";
+import AuthForm from "@/components/AuthForm";
+import { SignInSchema } from "@/lib/zod";
 
 const SignIn = () => {
-  return <div>SignIn</div>;
+  return (
+    <AuthForm
+      formType="SignIn"
+      schema={SignInSchema}
+      defaultValues={{ email: "", password: "" }}
+      onSubmit={(data) => Promise.resolve({ success: true, data })}
+    />
+  );
 };
 
 export default SignIn;
