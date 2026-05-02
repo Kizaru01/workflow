@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export const getIcon = (techname: string) => {
-  const iconClass = techname.replace(/[ .]g/, "").toLowerCase();
+  const iconClass = techname.replace(/\./g, "").toLowerCase();
 
   return techMap[iconClass]
     ? `${techMap[iconClass]} colored`

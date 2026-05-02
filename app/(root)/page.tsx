@@ -57,9 +57,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       .toLowerCase()
       .includes(query.toLowerCase());
     const matchesFilter = filter
-      ? question.tags.some(
-          (tag) => tag.name.toLowerCase() === filter.toLowerCase()
-        )
+      ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
       : true;
     return matchesQuery && matchesFilter;
   });
@@ -86,7 +84,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestion.map((question) => (
-          <h1 key={question.title}>{question.title}</h1>
+          <h1 key={question._id}>{question.title}</h1>
         ))}
       </div>
     </>

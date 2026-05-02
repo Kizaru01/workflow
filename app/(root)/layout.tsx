@@ -8,7 +8,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="background-light850_dark100 relative">
+    <div className="background-light850_dark100 relative">
       <Navbar />
       <div className="flex">
         <LeftSideBar />
@@ -17,6 +17,6 @@ export default function RootLayout({
         </main>
         <RightSideBar />
       </div>
-    </main>
+    </div>
   );
 }

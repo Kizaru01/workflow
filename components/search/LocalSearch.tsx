@@ -15,6 +15,7 @@ const LocalSearch = ({ route, imgSrc, placeholder, otherClasses }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
+  const searchParamsStr = searchParams.toString();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState(query);
 
@@ -22,7 +23,7 @@ const LocalSearch = ({ route, imgSrc, placeholder, otherClasses }: Props) => {
     const debounceQuery = setTimeout(() => {
       if (searchQuery) {
         const newUrl = formUrlQuery({
-          params: searchParams.toString(),
+          params: searchParamsStr,
           key: "query",
           value: searchQuery,
         });
@@ -30,7 +31,7 @@ const LocalSearch = ({ route, imgSrc, placeholder, otherClasses }: Props) => {
       } else {
         if (pathname === route) {
           const newUrl = removeKeysFromUrlQuery({
-            params: searchParams.toString(),
+            params: searchParamsStr,
             keysToRemove: ["query"],
           });
           router.push(newUrl, { scroll: false });
@@ -38,7 +39,7 @@ const LocalSearch = ({ route, imgSrc, placeholder, otherClasses }: Props) => {
       }
     }, 300);
     return () => clearTimeout(debounceQuery);
-  }, [searchQuery, router, route, searchParams, pathname]);
+  }, [searchQuery, router, route, searchParamsStr, pathname]);
   return (
     <div
       className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
