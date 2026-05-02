@@ -40,7 +40,7 @@ const AuthForm = <T extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  const [submitting, setSubmitting] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const handleSubmit = async () => {};
 
   const buttonText = formType === "SignIn" ? "Sign In" : "Sign Up";
@@ -107,7 +107,7 @@ const AuthForm = <T extends FieldValues>({
 
         {formType === "SignIn" ? (
           <p className="text-center">
-            Don&apost have an account?{""}
+            Don&apos;t have an account?{""}
             <Link href={ROUTES.SIGN_UP} className="ml-2">
               <span className="text-orange-500">Sign up</span>
             </Link>
