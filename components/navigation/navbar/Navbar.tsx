@@ -21,8 +21,10 @@ const Navbar = async () => {
       </Link>
       <p>Global Search</p>
       <div className="items-center justify-between flex gap-5">
-        <Theme />
-        {session ? <h1>Logout</h1> : <h1>Login</h1>}
+        <div className="items-center justify-between flex gap-5 max-sm:hidden">
+          <Theme />
+          {session ? "Logout" : "Login"}
+        </div>
         <Mobile />
       </div>
     </header>
