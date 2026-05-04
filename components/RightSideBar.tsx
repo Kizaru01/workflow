@@ -2,7 +2,7 @@ import { ROUTES } from "@/constants/routes";
 import { Link } from "lucide-react";
 import { title } from "process";
 import React from "react";
-import TagCard from "./TagCard";
+import TagCard from "./cards/TagCard";
 
 const RightSideBar = () => {
   return (

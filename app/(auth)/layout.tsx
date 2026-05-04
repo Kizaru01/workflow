@@ -1,4 +1,4 @@
-import SocialAuth from "@/components/SocialAuth";
+import SocialAuth from "@/components/forms/SocialAuth";
 import Image from "next/image";
 export default function AuthLayout({
   children,

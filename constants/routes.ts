@@ -5,4 +5,5 @@ export const ROUTES = {
   PROFILE: (id: string) => `/profile/${id}`,
   TAGS: (id: string) => `/tags/${id}`,
   ASK_QUESTION: "/ask-question",
+  QUESTION: (id: string) => `/ask-question/${id}`,
 };
