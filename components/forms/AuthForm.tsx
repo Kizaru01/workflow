@@ -18,10 +18,10 @@ import { Input } from "@/components/ui/input";
 import { ZodType } from "zod";
 import { ROUTES } from "@/constants/routes";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
-import { Spinner } from "./ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 interface AuthFormProps<T extends FieldValues> {
   schema: ZodType<T>;
