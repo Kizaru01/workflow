@@ -59,9 +59,8 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
   }
 
   if (error instanceof Error) {
-    logger.error(error.message);
-
-    return formatResponse(responseType, 500, error.message);
+    logger.error({ err: error }, error.message);
+    return formatResponse(responseType, 500, "Internal server error");
   }
 
   logger.error({ err: error }, "An unexpected error occurred");

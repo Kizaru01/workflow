@@ -3,6 +3,7 @@ import { formatPHTimeAgo } from "@/lib/utils";
 import Link from "next/link";
 import Metric from "../Metric";
 import TagCard from "./TagCard";
+import { QuestionCardProps, Tags } from "@/types";
 
 const QuestionCard = ({
   question: {

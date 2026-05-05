@@ -136,7 +136,7 @@ const QuestionForm = ({ defaultValues, onSubmit }: QuestionFormProps) => {
             <Field className="flex w-full flex-col gap-2.5">
               <FieldLabel htmlFor={field.name}>Content</FieldLabel>
               <Editor
-                value={field.name}
+                value={field.value}
                 editorRef={editor}
                 fieldChange={field.onChange}
               />
