@@ -1,6 +1,5 @@
 import * as z from "zod";
 
-// Shared reusable validators (DRY + consistency)
 const nameSchema = z
   .string()
   .trim()
@@ -24,7 +23,7 @@ const passwordSchema = z
   .regex(/[0-9]/, "Password must contain at least one number.")
   .regex(
     /[^A-Za-z0-9]/,
-    "Password must contain at least one special character.",
+    "Password must contain at least one special character."
   );
 
 // Schemas
@@ -55,6 +54,6 @@ export const AskQuestionSchema = z.object({
     .refine(
       (tags) =>
         new Set(tags.map((tag) => tag.toLowerCase())).size === tags.length,
-      "Duplicate tags are not allowed.",
+      "Duplicate tags are not allowed."
     ),
 });
