@@ -57,3 +57,10 @@ export const AskQuestionSchema = z.object({
       "Duplicate tags are not allowed."
     ),
 });
+
+export const UserSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  name: nameSchema,
+  email: emailSchema,
+  bio: z.string(),
+});
