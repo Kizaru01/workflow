@@ -44,7 +44,7 @@ const TagCard = ({
       <Badge
         className={cn(
           "background-light800_dark300 text-light400_light500 rounded-md border-none uppercase",
-          compact ? "px-3 py-1.5" : "px-4 py-2",
+          compact ? "px-3 py-1.5" : "px-4 py-2"
         )}
       >
         <div className="flex-center space-x-2">
