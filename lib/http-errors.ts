@@ -56,6 +56,5 @@ export class UnauthorizedError extends RequestError {
   constructor(message: string) {
     super(401, message);
     this.name = "UnauthorizedError";
-    this.message = "Tanginamo";
   }
 }

@@ -81,7 +81,7 @@ const QuestionForm = ({ defaultValues, onSubmit }: QuestionFormProps) => {
       return;
     }
 
-    if (tags.length > MAX_TAGS) {
+    if (tags.length >= MAX_TAGS) {
       form.setError("tags", {
         type: "manual",
         message: "Maximum Tags 3",

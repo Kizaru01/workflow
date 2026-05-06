@@ -64,3 +64,18 @@ export const UserSchema = z.object({
   email: emailSchema,
   bio: z.string(),
 });
+
+export const AccountSchema = z.object({
+  userId: z
+    .string()
+    .trim()
+    .regex(/^[a-fA-F0-9]{24}$/, "Invalid user id"),
+  name: nameSchema,
+  image: z.string().url("Invalid image URL").optional(),
+  password: passwordSchema.optional(),
+  provider: z.string().trim().min(1, "Provider is required."),
+  providerAccountId: z
+    .string()
+    .trim()
+    .min(1, "Provider account ID is required."),
+});
