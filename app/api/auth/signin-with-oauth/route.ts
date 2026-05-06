@@ -7,4 +7,9 @@ export async function POST(request: Request) {
   await connectToDatabase();
 
   const session = await mongoose.startSession();
+
+  session.startTransaction();
+  try {
+    const validateD;
+  } catch (error) {}
 }
