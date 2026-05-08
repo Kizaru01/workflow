@@ -1,4 +1,4 @@
-import User from "@/database/user.model";
+import Account from "@/database/account.model";
 import handleError from "@/lib/handlers/error";
 import { NotFoundError, ValidationError } from "@/lib/http-errors";
 import connectToDatabase from "@/lib/mongoose";
@@ -22,18 +22,20 @@ export async function POST(request: Request) {
 
     const { providerAccountId } = validateData.data;
 
-    const user = await User.findOne({
+    const account = await Account.findOne({
       providerAccountId,
-    });
+    })
+      .lean()
+      .exec();
 
-    if (!user) {
-      throw new NotFoundError("User");
+    if (!account) {
+      throw new NotFoundError("Account");
     }
 
     return NextResponse.json(
       {
         success: true,
-        data: user,
+        data: account,
       },
       { status: 200 }
     );

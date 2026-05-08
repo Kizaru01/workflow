@@ -5,6 +5,7 @@ import {
   DefaultValues,
   FieldValues,
   Path,
+  SubmitHandler,
   useForm,
 } from "react-hook-form";
 import * as z from "zod";
@@ -22,11 +23,14 @@ import { Button } from "@/components/ui/button";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { ActionResponse } from "@/types";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface AuthFormProps<T extends FieldValues> {
   schema: ZodType<T>;
   defaultValues: T;
-  onSubmit: (data: T) => Promise<{ success: boolean }>;
+  onSubmit: (data: T) => Promise<ActionResponse>;
   formType: "SignIn" | "SignUp";
 }
 const AuthForm = <T extends FieldValues>({
@@ -39,9 +43,26 @@ const AuthForm = <T extends FieldValues>({
     resolver: standardSchemaResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
   });
-
+  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async () => {};
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    const result = (await onSubmit(data)) as ActionResponse;
+
+    if (result?.success) {
+      toast.success("Success", {
+        description:
+          formType === "SignIn"
+            ? "Signed in successfully"
+            : "Signed up successfully",
+      });
+
+      router.push(ROUTES.HOME);
+    } else {
+      toast.error("Error", {
+        description: `Error, ${result?.status}`,
+      });
+    }
+  };
 
   const buttonText = formType === "SignIn" ? "Sign In" : "Sign Up";
 
@@ -51,21 +72,21 @@ const AuthForm = <T extends FieldValues>({
       className="mt-10 space-y-6"
     >
       <FieldGroup>
-        {Object.keys(defaultValues).map((field) => (
+        {Object.keys(defaultValues).map((values) => (
           <Controller
-            key={field}
-            name={field as Path<T>}
+            key={values}
+            name={values as Path<T>}
             control={form.control}
             render={({ field, fieldState }) => (
               <Field
-                className="flex w-full flex-col gap-2.5"
+                className="flex w-full flex-col gap-3 "
                 data-invalid={fieldState.invalid}
               >
-                <FieldLabel htmlFor={field.name}>
+                <FieldLabel>
                   {field.name === "email"
                     ? "Email Address"
-                    : field.name === "confirmPassword"
-                      ? "Confirm Password"
+                    : field.name === "password"
+                      ? "Password"
                       : field.name.charAt(0).toUpperCase() +
                         field.name.slice(1)}
                 </FieldLabel>
@@ -75,7 +96,7 @@ const AuthForm = <T extends FieldValues>({
                   type={field.name === "password" ? "password" : "text"}
                   aria-invalid={fieldState.invalid}
                   autoComplete="off"
-                  className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus min-h-12 rounded-1.5 border"
+                  className="paragraph-regular background-light800_dark300 light-border-2 text-dark300_light700 no-focus min-h-12 rounded-2 border"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

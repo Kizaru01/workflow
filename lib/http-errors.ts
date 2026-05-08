@@ -53,7 +53,7 @@ export class ForbiddenError extends RequestError {
 }
 
 export class UnauthorizedError extends RequestError {
-  constructor(message: string) {
+  constructor(message: string = "UnauthorizedError") {
     super(401, message);
     this.name = "UnauthorizedError";
   }

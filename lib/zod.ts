@@ -36,6 +36,7 @@ export const SignUpSchema = z.object({
   name: nameSchema,
   email: emailSchema,
   password: passwordSchema,
+  username: z.string().min(1, "Username is required"),
 });
 
 export const AskQuestionSchema = z.object({
@@ -78,4 +79,15 @@ export const AccountSchema = z.object({
     .string()
     .trim()
     .min(1, "Provider account ID is required."),
+});
+
+export const SignInWithOauth = z.object({
+  provider: z.enum(["google", "github"]),
+  providerAccountId: z.string().min(1, "Provider Account is Required."),
+  user: z.object({
+    name: z.string().min(1, "Name is required"),
+    username: z.string().min(3, "Username must be at least 3 characters long"),
+    email: emailSchema,
+    image: z.url("Invalid image URL").optional(),
+  }),
 });
