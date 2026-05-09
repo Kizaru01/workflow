@@ -1,10 +1,11 @@
+import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
 import Link from "next/link";
-import React from "react";
+
 const questions = [
   {
     _id: "1",
@@ -51,6 +52,8 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
+  const session = await auth();
+  console.log("SESSION", session);
   const { query = "", filter } = await searchParams;
 
   const filteredQuestion = questions.filter((question) => {
@@ -83,7 +86,7 @@ const Home = async ({ searchParams }: SearchParams) => {
         />
       </section>
       <HomeFilter />
-      <div className="mt-10 flex w-full flex-col gap-6">
+      <div className="mt-6 flex w-full flex-col gap-6">
         {filteredQuestion.map((question) => (
           <QuestionCard key={question._id} question={question} />
         ))}
