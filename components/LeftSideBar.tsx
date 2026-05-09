@@ -1,4 +1,3 @@
-import React from "react";
 import NavLinks from "./NavLinks";
 import { ROUTES } from "@/constants/routes";
 import Link from "next/link";
@@ -9,11 +8,11 @@ import { LogOut } from "lucide-react";
 const LeftSideBar = async () => {
   const session = await auth();
   const userId = session?.user?.id;
-
+  console.log("userId", session);
   return (
     <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-66.5">
       <div className="flex flex-1 flex-col gap-6">
-        <NavLinks isMobileNav={false} />
+        <NavLinks userId={userId} />
       </div>
       <div className="flex flex-col gap-3">
         {userId ? (
@@ -22,13 +21,16 @@ const LeftSideBar = async () => {
               "use server";
               await signOut();
             }}
+            className="flex items-center justify-center"
           >
             <Button
               type="submit"
-              className="base-mediem w-fit bg-transparent! px-4 py-3"
+              className="base-medium w-fit !bg-transparent px-4 py-3"
             >
               <LogOut className="size-5 text-black dark:text-white" />
-              Logout
+              <span className="max-lg:hidden text-dark300_light900">
+                Logout
+              </span>
             </Button>
           </form>
         ) : (
@@ -46,7 +48,7 @@ const LeftSideBar = async () => {
                   className="invert-colors lg:hidden"
                 />
                 <span className="max-lg:hidden primary-text-gradient">
-                  Logout
+                  Login
                 </span>
               </Link>
             </Button>
@@ -64,7 +66,7 @@ const LeftSideBar = async () => {
                   className="invert-color lg:hidden"
                 />
                 <span className="max-lg:hidden dark:text-white text-black">
-                  Login
+                  Sign Up
                 </span>
               </Link>
             </Button>

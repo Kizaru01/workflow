@@ -52,8 +52,6 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-  const session = await auth();
-  console.log("SESSION", session);
   const { query = "", filter } = await searchParams;
 
   const filteredQuestion = questions.filter((question) => {
