@@ -1,7 +1,11 @@
+import { auth } from "@/auth";
 import QuestionForm from "@/components/forms/QuestionForm";
-import React from "react";
+import { redirect } from "next/navigation";
 
-const AskQuestion = () => {
+const AskQuestion = async () => {
+  const session = await auth();
+
+  if (!session) return redirect("/sign-in");
   return (
     <div>
       <QuestionForm />

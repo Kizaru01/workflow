@@ -1,7 +1,6 @@
 "use client";
 
 import { AskQuestionSchema } from "@/lib/zod";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -17,16 +16,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { MDXEditorMethods } from "@mdxeditor/editor";
-import { type KeyboardEvent, useRef, useState } from "react";
+import { type KeyboardEvent, useRef, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import "@mdxeditor/editor/style.css";
 import TagCard from "../cards/TagCard";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/constants/routes";
+import { QuestionProps } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type QuestionFormValues = z.infer<typeof AskQuestionSchema>;
 
 interface QuestionFormProps {
-  defaultValues?: Partial<QuestionFormValues>;
-  onSubmit?: (data: QuestionFormValues) => Promise<void> | void;
+  question?: QuestionProps;
+  isEdit?: boolean;
 }
 
 const Editor = dynamic(() => import("@/components/editor"), {
@@ -34,23 +39,23 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 const MAX_TAGS = 3;
-const QuestionForm = ({ defaultValues, onSubmit }: QuestionFormProps) => {
+const QuestionForm = ({ question, isEdit = false }: QuestionFormProps) => {
+  const router = useRouter();
   const editor = useRef<MDXEditorMethods>(null);
   const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>(defaultValues?.tags ?? []);
+  const [tags, setTags] = useState<string[]>(
+    question?.tags.map((tag) => tag.name) ?? []
+  );
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<QuestionFormValues>({
-    resolver: standardSchemaResolver(AskQuestionSchema),
+    resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
-      title: defaultValues?.title ?? "",
-      content: defaultValues?.content ?? "",
-      tags: defaultValues?.tags ?? [],
+      title: question?.title ?? "",
+      content: question?.content ?? "",
+      tags: question?.tags.map((tag) => tag.name) ?? [],
     },
   });
-
-  const handleSubmit = async (values: QuestionFormValues) => {
-    await onSubmit?.(values);
-  };
 
   const updatedTags = (newTags: string[]) => {
     setTags(newTags);
@@ -96,8 +101,51 @@ const QuestionForm = ({ defaultValues, onSubmit }: QuestionFormProps) => {
   const handleRemoveTag = (tag: string) => {
     updatedTags(tags.filter((currentTag) => currentTag !== tag));
   };
+
+  const handleCreateQuestion = async (
+    data: z.infer<typeof AskQuestionSchema>
+  ) => {
+    startTransition(async () => {
+      if (isEdit && question) {
+        const result = await editQuestion({
+          questionId: question?._id,
+          ...data,
+        });
+
+        if (result.success) {
+          toast.success("Success", {
+            description: "Question updated succesfully",
+          });
+
+          if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+        } else {
+          toast.error("Error", {
+            description: `Error ${result.error?.message} || "Something went wrong`,
+          });
+        }
+
+        return;
+      }
+      const result = await createQuestion(data);
+
+      if (result.success) {
+        toast.success("Success", {
+          description: "Question created succesfully",
+        });
+
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+      } else {
+        toast.error("Error", {
+          description: `Error ${result.error?.message} || "Something went wrong`,
+        });
+      }
+    });
+  };
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+    <form
+      onSubmit={form.handleSubmit(handleCreateQuestion)}
+      className="space-y-8"
+    >
       <FieldGroup className="gap-8">
         <Controller
           name="title"
@@ -209,16 +257,16 @@ const QuestionForm = ({ defaultValues, onSubmit }: QuestionFormProps) => {
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={isPending}
             className="primary-gradient paragraph-medium min-h-12 rounded-2 px-5 py-3 font-inter text-light-900"
           >
-            {form.formState.isSubmitting ? (
+            {isPending ? (
               <span className="flex items-center gap-2">
                 <Spinner />
                 Submitting
               </span>
             ) : (
-              "Ask a Question"
+              <>{isEdit ? "Edit" : "Ask a Question"}</>
             )}
           </Button>
         </div>

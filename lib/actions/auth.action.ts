@@ -10,7 +10,6 @@ import Account from "@/database/account.model";
 import { signIn } from "@/auth";
 import action from "../handlers/action";
 import { NotFoundError } from "../http-errors";
-import { error } from "console";
 
 export async function signUpWithCredentials(
   params: AuthCredentials
