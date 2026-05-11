@@ -16,6 +16,21 @@ const nextConfig: NextConfig = {
         hostname: "m.media-amazon.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
     ],
   },
 };

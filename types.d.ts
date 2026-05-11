@@ -4,9 +4,10 @@ interface QuestionCardProps {
   question: Question;
 }
 
-interface Question {
+interface QuestionProps {
   _id: string;
   title: string;
+  content: string;
   content: string;
   upvotes: number;
   downvotes: number;
@@ -56,6 +57,24 @@ interface SignInWithOAuthParams {
 interface AuthCredentials {
   name: string;
   username: string;
-  email: string;
   password: string;
+  email: string;
+}
+interface CreateQuestionParams {
+  title: string;
+  content: string;
+  tags: string[];
+}
+
+interface RoutesParams {
+  params: Promise<Record<string, string>>;
+  searchParams: Promise<Record<string, string>>;
+}
+
+interface EditQuestionParams extends CreateQuestionParams {
+  questionId: string;
+}
+
+interface GetQuestionParams {
+  questionId: string;
 }

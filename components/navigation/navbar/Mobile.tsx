@@ -1,4 +1,3 @@
-"use client";
 import {
   Sheet,
   SheetClose,
@@ -11,8 +10,12 @@ import Image from "next/image";
 import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
 import NavLinks from "@/components/NavLinks";
-export default function Mobile() {
-  const user = false;
+import { auth, signOut } from "@/auth";
+import { LogOut } from "lucide-react";
+const Mobile = async () => {
+  const session = await auth();
+
+  const userId = session?.user?.id;
   return (
     <Sheet>
       <SheetTrigger asChild className="lg:hidden">
@@ -43,14 +46,24 @@ export default function Mobile() {
             </section>
           </SheetClose>
           <div className="flex flex-col gap-3">
-            {user ? (
-              <SheetClose asChild>
-                <Link href={ROUTES.SIGN_IN}>
-                  <Button className="small-medium btn-secondary min-h-10.25 w-full rounded-lg px-4 py-3 shadow-none">
-                    <span className="primary-text-gradient">Logout</span>
-                  </Button>
-                </Link>
-              </SheetClose>
+            {userId ? (
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut();
+                }}
+                className="flex items-center justify-center"
+              >
+                <Button
+                  type="submit"
+                  className="base-medium w-fit bg-transparent! px-4 py-3"
+                >
+                  <LogOut className="size-5 text-black dark:text-white" />
+                  <span className="max-lg:hidden text-dark300_light900">
+                    Logout
+                  </span>
+                </Button>
+              </form>
             ) : (
               <SheetClose asChild>
                 <Link href={ROUTES.SIGN_UP}>
@@ -67,4 +80,5 @@ export default function Mobile() {
       </SheetContent>
     </Sheet>
   );
-}
+};
+export default Mobile;

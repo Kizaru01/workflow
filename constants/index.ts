@@ -20,15 +20,16 @@ export const sidebarLinks = [
     label: "Find Jobs",
   },
   {
-    imgURL: "/icons/tag.svg",
-    route: "/tags",
-    label: "Tags",
-  },
-  {
     imgURL: "/icons/user.svg",
     route: "/profile",
     label: "Profile",
   },
+  {
+    imgURL: "/icons/tag.svg",
+    route: "/tags",
+    label: "Tags",
+  },
+
   {
     imgURL: "/icons/question.svg",
     route: "/ask-question",
