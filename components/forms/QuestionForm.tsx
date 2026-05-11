@@ -114,13 +114,13 @@ const QuestionForm = ({ question, isEdit = false }: QuestionFormProps) => {
 
         if (result.success) {
           toast.success("Success", {
-            description: "Question updated succesfully",
+            description: "Question updated successfully",
           });
 
           if (result.data) router.push(ROUTES.QUESTION(result.data._id));
         } else {
           toast.error("Error", {
-            description: `Error ${result.error?.message} || "Something went wrong`,
+            description: result.error?.message ?? "Something went wrong",
           });
         }
 
