@@ -12,7 +12,8 @@ export const getIcon = (techname: string) => {
     ? `${techMap[iconClass]} colored`
     : "devicon-devicon-plain";
 };
-export const formatPHTimeAgo = (date: Date | string | number): string => {
+export const formatPHTimeAgo = (createdAt: Date | string | number): string => {
+  const date = new Date(createdAt);
   const now = new Date();
   const inputDate = new Date(date);
 

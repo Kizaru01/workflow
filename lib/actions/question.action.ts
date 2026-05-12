@@ -90,7 +90,6 @@ export async function createQuestion(
     session.endSession();
   }
 }
-
 export async function editQuestion(
   params: EditQuestionParams
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -128,6 +127,7 @@ export async function editQuestion(
       tag.name.toLowerCase()
     );
 
+    console.log("Names:", existingTagNames);
     const tagsToAdd = tags.filter(
       (tag) => !existingTagNames.includes(tag.toLowerCase())
     );
@@ -160,11 +160,17 @@ export async function editQuestion(
     if (tagsToRemove.length > 0) {
       const tagIdsToRemove = tagsToRemove.map((tag: ITagDoc) => tag._id);
 
-      await Tag.updateMany(
-        { _id: { $in: tagIdsToRemove } },
-        { $inc: { questions: -1 } },
-        { session }
-      );
+      for (const tag of tagsToRemove) {
+        if (tag.questions <= 1) {
+          await Tag.findByIdAndDelete(tag._id, { session });
+        } else {
+          await Tag.findByIdAndUpdate(
+            tag._id,
+            { $inc: { questions: -1 } },
+            { session }
+          );
+        }
+      }
 
       await TagQuestion.deleteMany(
         { tag: { $in: tagIdsToRemove }, question: questionId },
@@ -174,7 +180,7 @@ export async function editQuestion(
       question.tags = question.tags.filter(
         (tag: ITagDoc) =>
           !tagIdsToRemove.some(
-            (removeId: string) => removeId.toString() === tag._id.toString()
+            (tags: string) => tags.toString() === tag._id.toString()
           )
       );
     }

@@ -72,7 +72,7 @@ const TagCard = ({
     );
   }
 
-  return <Link href={ROUTES.TAGS(_id)}>{content}</Link>;
+  return <Link href={ROUTES.TAG(_id)}>{content}</Link>;
 };
 
 export default TagCard;
