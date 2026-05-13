@@ -21,16 +21,6 @@ const Home = async ({ searchParams }: SearchParams) => {
 
   const { questions } = data || {};
 
-  // const filteredQuestion = questions.filter((question) => {
-  //   const matchesQuery = question.title
-  //     .toLowerCase()
-  //     .includes(query.toLowerCase());
-  //   const matchesFilter = filter
-  // ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
-  //     : true;
-  //   return matchesQuery && matchesFilter;
-  // });
-
   return (
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center mb-4">

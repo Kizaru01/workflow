@@ -127,7 +127,6 @@ export async function editQuestion(
       tag.name.toLowerCase()
     );
 
-    console.log("Names:", existingTagNames);
     const tagsToAdd = tags.filter(
       (tag) => !existingTagNames.includes(tag.toLowerCase())
     );
