@@ -78,3 +78,10 @@ interface EditQuestionParams extends CreateQuestionParams {
 interface GetQuestionParams {
   questionId: string;
 }
+interface PaginatedSearchParams {
+  page?: number;
+  pageSize: number;
+  query?: string;
+  filter?: string;
+  sort?: string;
+}
