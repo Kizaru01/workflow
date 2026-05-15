@@ -40,6 +40,9 @@ export async function createQuestion(
   const userId = validationResult?.session?.user?.id;
   const session = await mongoose.startSession();
   session.startTransaction();
+  const escapeRegex = (value: string) => {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
   try {
     const [question] = await Question.create(
       [{ title, content, author: userId }],
@@ -54,9 +57,10 @@ export async function createQuestion(
     const tagQuestionDocuments = [];
 
     for (const tag of tags) {
+      const safeTag = escapeRegex(tag);
       const existingTag = await Tag.findOneAndUpdate(
         {
-          name: { $regex: new RegExp(`^${tag}$`, "i") },
+          name: { $regex: new RegExp(`^${safeTag}$`, "i") },
         },
         { $setOnInsert: { name: tag.toLowerCase() }, $inc: { questions: 1 } },
         { upsert: true, new: true, session }
@@ -262,7 +266,7 @@ export async function getQuestions(
     case "newest":
       sortCriteria = { createdAt: -1 };
       break;
-    case "unaswered":
+    case "unanswered":
       filterQuery.answers = 0;
       sortCriteria = { createdAt: -1 };
       break;

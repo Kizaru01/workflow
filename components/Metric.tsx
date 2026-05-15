@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { cn } from "@/lib/utils";
 interface Props {
   imgUrl: string;
   alt: string;
@@ -10,6 +11,7 @@ interface Props {
   textStyles?: string;
   isAuthor?: boolean;
   imgStyles?: string;
+  titleStyles?: string;
 }
 const Metric = ({
   imgUrl,
@@ -20,28 +22,26 @@ const Metric = ({
   textStyles,
   isAuthor,
   imgStyles,
+  titleStyles,
 }: Props) => {
   const MetricContent = (
     <>
       <Image
         src={imgUrl}
-        width={40}
-        height={40}
+        width={16}
+        height={16}
         alt={alt}
-        className={`rounded-full w-6 h-6 object-cover ${imgStyles}`}
+        className={`rounded-full object-contain ${imgStyles}`}
       />
 
-      <p className={`${textStyles} flex items-center justify-center gap-1`}>
+      <p className={`${textStyles} flex items-center gap-1`}>
         {value}
+
         {title ? (
-          <span
-            className={`small-regular line-clamp-1 ${isAuthor ? "max-sm:hidden" : ""}`}
-          >
+          <span className={cn(`small-regular line-clamp-1`, titleStyles)}>
             {title}
           </span>
-        ) : (
-          "null"
-        )}
+        ) : null}
       </p>
     </>
   );

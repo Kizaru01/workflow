@@ -1,4 +1,4 @@
-import { techMap } from "@/constants/techmap";
+import { descriptions, techMap } from "@/constants/techmap";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -12,6 +12,15 @@ export const getIcon = (techname: string) => {
     ? `${techMap[iconClass]} colored`
     : "devicon-devicon-plain";
 };
+export const getTagDescription = (techname: string) => {
+  const normalized = techname.replace(/\./g, "").toLowerCase();
+
+  return (
+    descriptions[normalized] ||
+    "A technology commonly used in modern software development."
+  );
+};
+
 export const formatPHTimeAgo = (createdAt: Date | string | number): string => {
   const date = new Date(createdAt);
   const now = new Date();
@@ -38,4 +47,14 @@ export const formatPHTimeAgo = (createdAt: Date | string | number): string => {
 
   const diffInYears = Math.floor(diffInMonths / 12);
   return `${diffInYears} years ago`;
+};
+
+export const formatNumber = (number: number) => {
+  if (number >= 1000000) {
+    return (number / 1000000).toFixed(1) + "M";
+  } else if (number >= 1000) {
+    return (number / 1000).toFixed(1) + "K";
+  } else {
+    return number.toString();
+  }
 };
