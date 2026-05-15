@@ -262,7 +262,7 @@ export async function getQuestions(
     case "newest":
       sortCriteria = { createdAt: -1 };
       break;
-    case "unaswered":
+    case "unanswered":
       filterQuery.answers = 0;
       sortCriteria = { createdAt: -1 };
       break;

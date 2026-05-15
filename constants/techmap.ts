@@ -196,3 +196,136 @@ export const techMap: { [key: string]: string } = {
   // Three.js
   threejs: "devicon-threejs-original",
 };
+export const descriptions: { [key: string]: string } = {
+  javascript:
+    "A versatile programming language used for interactive web development.",
+
+  typescript:
+    "A strongly typed superset of JavaScript for scalable applications.",
+
+  react: "A JavaScript library for building modern user interfaces.",
+
+  nextjs: "A React framework for full-stack and server-rendered applications.",
+
+  nodejs: "A JavaScript runtime built for scalable backend development.",
+
+  bun: "A fast all-in-one JavaScript runtime and toolkit.",
+
+  deno: "A secure modern runtime for JavaScript and TypeScript.",
+
+  python:
+    "A popular programming language known for simplicity and versatility.",
+
+  java: "A robust object-oriented programming language widely used in enterprise systems.",
+
+  "c++":
+    "A high-performance programming language for system and game development.",
+
+  "c#": "A modern programming language developed by Microsoft for .NET applications.",
+
+  php: "A server-side scripting language designed for web development.",
+
+  html: "The standard markup language for structuring web pages.",
+
+  css: "A stylesheet language used to design and style web pages.",
+
+  git: "A distributed version control system for tracking code changes.",
+
+  docker: "A platform for building and deploying applications in containers.",
+
+  mongodb: "A NoSQL database designed for flexible and scalable data storage.",
+
+  mysql: "A popular relational database management system.",
+
+  postgresql: "An advanced open-source relational database system.",
+
+  aws: "Amazon's cloud computing platform offering scalable infrastructure services.",
+
+  firebase: "A backend platform by Google for web and mobile applications.",
+
+  graphql: "A query language for APIs with flexible data fetching.",
+
+  vue: "A progressive JavaScript framework for building user interfaces.",
+
+  tailwind: "A utility-first CSS framework for rapid UI development.",
+
+  angular:
+    "A TypeScript-based framework for building dynamic web applications.",
+
+  jquery: "A lightweight JavaScript library for DOM manipulation and events.",
+
+  sass: "A CSS preprocessor with variables, nesting, and reusable styles.",
+
+  laravel: "A PHP framework for elegant and modern web development.",
+
+  rails: "A Ruby framework focused on convention over configuration.",
+
+  redis:
+    "An in-memory database commonly used for caching and real-time applications.",
+
+  linux:
+    "An open-source operating system widely used in servers and development.",
+
+  jenkins: "An automation server used for CI/CD pipelines.",
+
+  kubernetes:
+    "A container orchestration platform for managing deployments at scale.",
+
+  azure:
+    "Microsoft's cloud computing platform for building and deploying services.",
+
+  gcp: "Google's cloud platform offering infrastructure and AI services.",
+
+  bitbucket: "A Git-based repository hosting and collaboration platform.",
+
+  nginx: "A high-performance web server and reverse proxy.",
+
+  blender: "An open-source 3D creation suite for modeling and animation.",
+
+  unity: "A game development engine for 2D and 3D applications.",
+
+  unreal: "A powerful real-time 3D game engine by Epic Games.",
+
+  swift: "Apple's programming language for iOS and macOS development.",
+
+  kotlin:
+    "A modern programming language officially supported for Android development.",
+
+  go: "A fast and efficient programming language designed by Google.",
+
+  rust: "A systems programming language focused on safety and performance.",
+
+  dart: "A programming language optimized for building UI applications.",
+
+  flask: "A lightweight Python framework for backend and web applications.",
+
+  django: "A high-level Python framework for rapid web development.",
+
+  bootstrap: "A front-end framework with prebuilt responsive UI components.",
+
+  materialui: "A React UI framework implementing Google's Material Design.",
+
+  photoshop: "Adobe's professional image editing and graphic design software.",
+
+  illustrator: "Adobe's vector graphics design software.",
+
+  xd: "Adobe's UI and UX design and prototyping tool.",
+
+  premiere: "Adobe's professional video editing software.",
+
+  figma: "A collaborative interface design and prototyping tool.",
+
+  inkscape: "An open-source vector graphics editor.",
+
+  trello: "A project management and task organization tool.",
+
+  jira: "A project tracking and agile management platform.",
+
+  heroku: "A cloud platform for deploying and hosting applications.",
+
+  elasticsearch: "A distributed search and analytics engine.",
+
+  redux: "A predictable state management library for JavaScript applications.",
+
+  threejs: "A JavaScript library for creating 3D graphics on the web.",
+};
