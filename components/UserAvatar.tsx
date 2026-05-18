@@ -18,7 +18,7 @@ const UserAvatar = ({
   className = "h-9 w-9",
   fallbackClassname,
 }: Props) => {
-  const initial = name
+  const initial = (name || "")
     .split(" ")
     .map((word: string) => word[0])
     .join("")

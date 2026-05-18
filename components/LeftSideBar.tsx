@@ -3,12 +3,19 @@ import { ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
 import { LogOut } from "lucide-react";
-const LeftSideBar = async () => {
-  const session = await auth();
-  const userId = session?.user?.id;
-  console.log("userId", session);
+
+interface Props {
+  user?: {
+    id?: string;
+    name?: string | null;
+    image?: string | null;
+  };
+}
+const LeftSideBar = ({ user }: Props) => {
+  const userId = user?.id;
+
   return (
     <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-85.5">
       <div className="flex flex-1 flex-col gap-6">

@@ -4,10 +4,14 @@ import { Theme } from "@/components/navigation/navbar/Theme";
 import { auth } from "@/auth";
 import Mobile from "./Mobile";
 import UserAvatar from "@/components/UserAvatar";
-
-const Navbar = async () => {
-  const session = await auth();
-
+interface Props {
+  user?: {
+    id?: string;
+    name?: string | null;
+    image?: string | null;
+  };
+}
+const Navbar = ({ user }: Props) => {
   return (
     <header className="flex items-center justify-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
       <Link href="/" className="flex items-center gap-1">
@@ -24,12 +28,8 @@ const Navbar = async () => {
       <p>Global Search</p>
       <div className="items-center justify-between flex gap-5">
         <Theme />
-        {session?.user?.id && (
-          <UserAvatar
-            id={session.user.id}
-            name={session.user.name!}
-            imageUrl={session.user.image}
-          />
+        {user?.id && (
+          <UserAvatar id={user.id} name={user.name!} imageUrl={user.image} />
         )}
 
         <Mobile />
