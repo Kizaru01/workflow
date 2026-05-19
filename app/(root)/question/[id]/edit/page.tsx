@@ -7,6 +7,7 @@ import { notFound, redirect } from "next/navigation";
 
 const EditQuestion = async ({ params }: RoutesParams) => {
   const { id } = await params;
+
   if (!id) return notFound();
   const session = await auth();
 
@@ -16,8 +17,15 @@ const EditQuestion = async ({ params }: RoutesParams) => {
 
   if (!success || !question?.author) return notFound();
 
-  if (String(question.author) !== session.user?.id)
+  if (String(question.author._id) !== session.user?.id) {
+    console.error("Unauthorized edit attempt", {
+      questionId: question._id,
+      ownerId: String(question.author._id),
+      currentUserId: session.user?.id,
+    });
+
     redirect(ROUTES.QUESTION(id));
+  }
   return (
     <>
       <QuestionForm question={question} isEdit />

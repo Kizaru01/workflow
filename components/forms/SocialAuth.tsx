@@ -13,7 +13,6 @@ const SocialAuth = () => {
         redirect: true,
       });
     } catch (error) {
-      console.log(error);
       toast("Sign in Failed", {
         description:
           error instanceof Error

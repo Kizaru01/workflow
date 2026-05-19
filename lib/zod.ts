@@ -47,7 +47,7 @@ export const AskQuestionSchema = z.object({
   content: z
     .string()
     .min(1, "Content is required.")
-    .max(5000, "Content is too long."),
+    .max(10000, "Content is too long."),
   tags: z
     .array(z.string().trim().min(1, "Tag is required."))
     .min(1, "Tag is required.")
@@ -108,4 +108,7 @@ export const PaginatedSearchSchema = z.object({
 });
 export const GetTagQuestionSchema = PaginatedSearchSchema.extend({
   tagId: z.string().min(1, "Tag Id iis required"),
+});
+export const AnswerSchema = z.object({
+  content: z.string().min(50, "Please provide a meaningful answer "),
 });
