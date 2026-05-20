@@ -96,3 +96,12 @@ interface CreateAnswerParams {
   questionId: string;
   content: string;
 }
+interface GetAnswerParams extends PaginatedSearchParams {
+  questionId: string;
+}
+interface GetAllAnswerParams {
+  _id: string;
+  author: Author;
+  content: string;
+  createdAt: Date;
+}
