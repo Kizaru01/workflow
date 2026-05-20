@@ -112,3 +112,7 @@ export const GetTagQuestionSchema = PaginatedSearchSchema.extend({
 export const AnswerSchema = z.object({
   content: z.string().min(50, "Please provide a meaningful answer "),
 });
+
+export const AnswerServerSchema = AnswerSchema.extend({
+  questionId: z.string().min(1, "Question Id is required"),
+});

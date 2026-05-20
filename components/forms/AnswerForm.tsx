@@ -7,17 +7,20 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import { AnswerSchema } from "@/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
+import { createAnswer } from "@/lib/actions/answer.action";
+
+import { toast } from "sonner";
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const AnswerForm = () => {
+const AnswerForm = ({ questionId }: { questionId: string }) => {
   const editorRef = useRef<MDXEditorMethods>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnswer, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
@@ -26,12 +29,27 @@ const AnswerForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AnswerSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof AnswerSchema>) => {
+    startAnsweringTransition(async () => {
+      const result = await createAnswer({
+        questionId,
+        content: values.content,
+      });
+
+      if (result.success) {
+        toast.success("Success", {
+          description: "Your answer has been posted succesfully",
+        });
+      } else {
+        toast.error("Failed", {
+          description: "An error occured while posting your answer",
+        });
+      }
+    });
   };
 
   return (
-    <div>
+    <div className="background-light900_dark300 p-4 rounded-xl">
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
@@ -43,13 +61,13 @@ const AnswerForm = () => {
         >
           {isAISubmitting ? (
             <>
-              <ReloadIcon className="mr-2 size-4 animate-spin" />
+              <ReloadIcon className=" size-4 animate-spin" />
               Generating...
             </>
           ) : (
             <>
               <Image
-                src="/icons/star.svg"
+                src="/icons/stars.svg"
                 alt="Generate AI Answer"
                 width={12}
                 height={12}
@@ -68,7 +86,7 @@ const AnswerForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field
-                className="flex w-full flex-col gap-3 "
+                className="flex w-full flex-col gap-10 "
                 data-invalid={fieldState.invalid}
               >
                 <Editor
@@ -85,9 +103,9 @@ const AnswerForm = () => {
         </FieldGroup>
         <div className="flex justify-end">
           <Button type="submit" className="primary-gradient w-fit">
-            {isSubmitting ? (
+            {isAnswer ? (
               <>
-                <ReloadIcon className="mr-2 size-4 animate-spin" />
+                <ReloadIcon className="size-4 animate-spin" />
                 Posting...
               </>
             ) : (

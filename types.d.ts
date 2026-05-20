@@ -89,6 +89,10 @@ interface PaginatedSearchParams {
 interface GegTagQuestionParams extends Omit<PaginatedSearchParams, "filter"> {
   tagId: string;
 }
-interface AnswerSchema {
+interface AnswerParams {
+  content: string;
+}
+interface CreateAnswerParams {
+  questionId: string;
   content: string;
 }
