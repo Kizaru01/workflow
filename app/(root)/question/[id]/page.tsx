@@ -6,20 +6,36 @@ import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 
 import { ROUTES } from "@/constants/routes";
-import { getAnswer } from "@/lib/actions/answer.action";
-import { getIncrementViews, getQuestion } from "@/lib/actions/question.action";
+import { getAnswer } from "@/lib/queries/answer.query";
+import {
+  getQuestion,
+  incrementQuestionViews,
+} from "@/lib/queries/question.query";
 import { formatNumber, formatPHTimeAgo } from "@/lib/utils";
 import { RoutesParams, Tags } from "@/types";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { after } from "next/server";
 const QuestionDetailsPage = async ({ params }: RoutesParams) => {
   const { id } = await params;
 
-  const { success, data: question } = await getQuestion({ questionId: id });
+  const {
+    success,
+    data: question,
+    error: questionError,
+    status: questionStatus,
+  } = await getQuestion({ questionId: id });
+
+  if (!success || !question) {
+    if (questionStatus === 400 || questionStatus === 404) {
+      notFound();
+    }
+
+    throw new Error(questionError?.message ?? "Failed to fetch question");
+  }
 
   after(async () => {
-    await getIncrementViews({ questionId: id });
+    await incrementQuestionViews({ questionId: id });
   });
 
   const {
@@ -33,7 +49,6 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
     filter: "latest",
   });
 
-  if (!success || !question) return redirect("/404");
   const { author, createdAt, answers, views, tags, title, content } = question;
   return (
     <>

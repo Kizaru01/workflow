@@ -1,5 +1,11 @@
 import * as z from "zod";
 
+const objectIdSchema = (fieldName: string) =>
+  z
+    .string()
+    .trim()
+    .regex(/^[a-fA-F0-9]{24}$/, `Invalid ${fieldName}`);
+
 const nameSchema = z
   .string()
   .trim()
@@ -67,10 +73,7 @@ export const UserSchema = z.object({
 });
 
 export const AccountSchema = z.object({
-  userId: z
-    .string()
-    .trim()
-    .regex(/^[a-fA-F0-9]{24}$/, "Invalid user id"),
+  userId: objectIdSchema("user id"),
   name: nameSchema,
   image: z.string().url("Invalid image URL").optional(),
   password: passwordSchema.optional(),
@@ -93,11 +96,11 @@ export const SignInWithOauth = z.object({
 });
 
 export const EditQuestionSchema = AskQuestionSchema.extend({
-  questionId: z.string().min(1, "Question Id is required"),
+  questionId: objectIdSchema("question id"),
 });
 
 export const GetQuestionSchema = z.object({
-  questionId: z.string().min(1, "Question Id is required"),
+  questionId: objectIdSchema("question id"),
 });
 export const PaginatedSearchSchema = z.object({
   page: z.number().int().positive().default(1),
@@ -107,15 +110,15 @@ export const PaginatedSearchSchema = z.object({
   sort: z.string().optional(),
 });
 export const GetTagQuestionSchema = PaginatedSearchSchema.extend({
-  tagId: z.string().min(1, "Tag Id iis required"),
+  tagId: objectIdSchema("tag id"),
 });
 export const AnswerSchema = z.object({
   content: z.string().min(50, "Please provide a meaningful answer "),
 });
 
 export const AnswerServerSchema = AnswerSchema.extend({
-  questionId: z.string().min(1, "Question Id is required"),
+  questionId: objectIdSchema("question id"),
 });
 export const GetAnswerSchema = PaginatedSearchSchema.extend({
-  questionId: z.string().min(1, "Question Id is required"),
+  questionId: objectIdSchema("question id"),
 });

@@ -5,7 +5,7 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
-import { getQuestions } from "@/lib/actions/question.action";
+import { getQuestions } from "@/lib/queries/question.query";
 import Link from "next/link";
 
 interface SearchParams {

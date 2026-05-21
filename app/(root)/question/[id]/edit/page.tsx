@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import QuestionForm from "@/components/forms/QuestionForm";
 import { ROUTES } from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestion } from "@/lib/queries/question.query";
 import { RoutesParams } from "@/types";
 import { notFound, redirect } from "next/navigation";
 
@@ -13,9 +13,20 @@ const EditQuestion = async ({ params }: RoutesParams) => {
 
   if (!session) return redirect("/sign-in");
 
-  const { data: question, success } = await getQuestion({ questionId: id });
+  const {
+    data: question,
+    success,
+    error,
+    status,
+  } = await getQuestion({ questionId: id });
 
-  if (!success || !question?.author) return notFound();
+  if (!success || !question?.author) {
+    if (status === 400 || status === 404) {
+      notFound();
+    }
+
+    throw new Error(error?.message ?? "Failed to fetch question");
+  }
 
   if (String(question.author._id) !== session.user?.id) {
     console.error("Unauthorized edit attempt", {
