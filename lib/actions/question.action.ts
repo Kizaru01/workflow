@@ -5,22 +5,16 @@ import {
   CreateQuestionParams,
   EditQuestionParams,
   ErrorResponse,
-  GetQuestionParams,
-  PaginatedSearchParams,
   QuestionProps,
 } from "@/types";
-import {
-  AskQuestionSchema,
-  EditQuestionSchema,
-  GetQuestionSchema,
-  PaginatedSearchSchema,
-} from "../zod";
+import { AskQuestionSchema, EditQuestionSchema } from "../zod";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import mongoose from "mongoose";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
+import { ForbiddenError, NotFoundError } from "../http-errors";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -115,10 +109,10 @@ export async function editQuestion(
 
   try {
     const question = await Question.findById(questionId).populate("tags");
-    if (!question) throw new Error("Question not found");
+    if (!question) throw new NotFoundError("Question");
 
     if (question.author.toString() !== userId) {
-      throw new Error("Unauthorized");
+      throw new ForbiddenError("You are not allowed to edit this question");
     }
 
     if (question.title !== title || question.content !== content) {
@@ -204,132 +198,5 @@ export async function editQuestion(
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
-  }
-}
-export async function getQuestion(
-  params: GetQuestionParams
-): Promise<ActionResponse<QuestionProps>> {
-  const validateResult = await action({
-    params,
-    schema: GetQuestionSchema,
-    authorize: true,
-  });
-
-  if (validateResult instanceof Error) {
-    return handleError(validateResult) as ErrorResponse;
-  }
-
-  const { questionId } = validateResult.params!;
-
-  try {
-    const question = await Question.findById(questionId)
-      .populate("tags")
-      .populate("author", "_id name image");
-    if (!question) {
-      throw new Error("Question not found");
-    }
-
-    return { success: true, data: JSON.parse(JSON.stringify(question)) };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
-  }
-}
-export async function getQuestions(
-  params: PaginatedSearchParams
-): Promise<ActionResponse<{ questions: QuestionProps[]; isNext: boolean }>> {
-  const validationResult = await action({
-    params,
-    schema: PaginatedSearchSchema,
-  });
-
-  if (validationResult instanceof Error) {
-    return handleError(validationResult) as ErrorResponse;
-  }
-
-  const { page = 1, pageSize = 10, query, filter } = params;
-  const skip = (Number(page) - 1) * pageSize;
-  const limit = Number(pageSize);
-
-  const filterQuery: mongoose.QueryFilter<typeof Question> = {};
-
-  if (filter === "recommended")
-    return { success: true, data: { questions: [], isNext: false } };
-
-  if (query) {
-    filterQuery.$or = [
-      { title: { $regex: new RegExp(query, "i") } },
-      { content: { $regex: new RegExp(query, "i") } },
-    ];
-  }
-
-  let sortCriteria = {};
-
-  switch (filter) {
-    case "newest":
-      sortCriteria = { createdAt: -1 };
-      break;
-    case "unanswered":
-      filterQuery.answers = 0;
-      sortCriteria = { createdAt: -1 };
-      break;
-    case "popular":
-      sortCriteria = { upvotes: -1 };
-      break;
-    default:
-      sortCriteria = { createdAt: -1 };
-      break;
-  }
-
-  try {
-    const totalQuestions = await Question.countDocuments(filterQuery);
-    const questions = await Question.find(filterQuery)
-      .populate("tags")
-      .populate("author", "name image")
-      .lean()
-      .sort(sortCriteria)
-      .skip(skip)
-      .limit(limit);
-
-    const isNext = totalQuestions > skip + questions.length;
-
-    return {
-      success: true,
-      data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
-    };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
-  }
-}
-export async function getIncrementViews(
-  params: GetQuestionParams
-): Promise<ActionResponse<{ views: number }>> {
-  const validationResult = await action({
-    params,
-    schema: GetQuestionSchema,
-  });
-
-  if (validationResult instanceof Error) {
-    return handleError(validationResult) as ErrorResponse;
-  }
-  const { questionId } = validationResult.params!;
-  try {
-    const question = await Question.findById(questionId);
-
-    if (!question) {
-      throw new Error("Question not found");
-    }
-
-    question.views += 1;
-
-    await question.save();
-
-    return {
-      success: true,
-      data: {
-        views: question.views,
-      },
-    };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
   }
 }

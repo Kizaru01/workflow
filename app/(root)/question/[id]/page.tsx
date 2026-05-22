@@ -1,3 +1,4 @@
+import AllAnswers from "@/components/answers/AllAnswers";
 import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
@@ -5,22 +6,49 @@ import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 
 import { ROUTES } from "@/constants/routes";
-import { getIncrementViews, getQuestion } from "@/lib/actions/question.action";
+import { getAnswer } from "@/lib/queries/answer.query";
+import {
+  getQuestion,
+  incrementQuestionViews,
+} from "@/lib/queries/question.query";
 import { formatNumber, formatPHTimeAgo } from "@/lib/utils";
 import { RoutesParams, Tags } from "@/types";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { after } from "next/server";
 const QuestionDetailsPage = async ({ params }: RoutesParams) => {
   const { id } = await params;
 
-  const { success, data: question } = await getQuestion({ questionId: id });
+  const {
+    success,
+    data: question,
+    error: questionError,
+    status: questionStatus,
+  } = await getQuestion({ questionId: id });
+
+  if (!success || !question) {
+    if (questionStatus === 400 || questionStatus === 404) {
+      notFound();
+    }
+
+    throw new Error(questionError?.message ?? "Failed to fetch question");
+  }
 
   after(async () => {
-    await getIncrementViews({ questionId: id });
+    await incrementQuestionViews({ questionId: id });
   });
 
-  if (!success || !question) return redirect("/404");
+  const {
+    success: answerSuccess,
+    data: dataSuccess,
+    error: answerError,
+  } = await getAnswer({
+    questionId: id,
+    page: 1,
+    pageSize: 10,
+    filter: "latest",
+  });
+
   const { author, createdAt, answers, views, tags, title, content } = question;
   return (
     <>
@@ -84,7 +112,19 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
         ))}
       </div>
       <section className="my-6">
-        <AnswerForm />
+        <AllAnswers
+          data={dataSuccess?.answers}
+          success={answerSuccess}
+          error={answerError}
+          totalAnswers={dataSuccess?.totalAnswers || 0}
+        />
+      </section>
+      <section className="my-6">
+        <AnswerForm
+          questionId={question._id}
+          questionTitle={question.title}
+          questionContent={question.content}
+        />
       </section>
     </>
   );

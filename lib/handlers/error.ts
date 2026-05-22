@@ -6,13 +6,41 @@ import logger from "../logger";
 
 export type ResponseType = "api" | "server";
 
-const formatResponse = (
+type ErrorContent = {
+  success: false;
+  error: {
+    message: string;
+    details?: Record<string, string[]>;
+  };
+};
+
+type ServerErrorResponse = ErrorContent & { status: number };
+
+function formatResponse(
+  responseType: "api",
+  status: number,
+  message: string,
+  errors?: Record<string, string[]> | undefined
+): NextResponse<ErrorContent>;
+function formatResponse(
+  responseType: "server",
+  status: number,
+  message: string,
+  errors?: Record<string, string[]> | undefined
+): ServerErrorResponse;
+function formatResponse(
   responseType: ResponseType,
   status: number,
   message: string,
   errors?: Record<string, string[]> | undefined
-) => {
-  const responseContent = {
+): NextResponse<ErrorContent> | ServerErrorResponse;
+function formatResponse(
+  responseType: ResponseType,
+  status: number,
+  message: string,
+  errors?: Record<string, string[]> | undefined
+) {
+  const responseContent: ErrorContent = {
     success: false,
     error: {
       message,
@@ -23,9 +51,11 @@ const formatResponse = (
   return responseType === "api"
     ? NextResponse.json(responseContent, { status })
     : { status, ...responseContent };
-};
+}
 
-const handleError = (error: unknown, responseType: ResponseType = "server") => {
+function handleError(error: unknown, responseType: "api"): NextResponse<ErrorContent>;
+function handleError(error: unknown, responseType?: "server"): ServerErrorResponse;
+function handleError(error: unknown, responseType: ResponseType = "server") {
   if (error instanceof RequestError) {
     logger.error(
       { err: error },
@@ -65,6 +95,6 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
 
   logger.error({ err: error }, "An unexpected error occurred");
   return formatResponse(responseType, 500, "An unexpected error occurred");
-};
+}
 
 export default handleError;

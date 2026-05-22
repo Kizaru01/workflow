@@ -47,3 +47,7 @@ export const EMPTY_COLLECTIONS = {
     href: ROUTES.COLLECTION,
   },
 };
+export const EMPTY_ANSWERS = {
+  title: "No answers found",
+  message: "The answers is empty. Be the first answer.",
+};

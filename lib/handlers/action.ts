@@ -35,14 +35,26 @@ export default async function action<T>({
 
   let session: Session | null = null;
   if (authorize) {
-    session = await auth();
+    try {
+      session = await auth();
+    } catch (error) {
+      return error instanceof Error
+        ? error
+        : new Error("Authentication check failed");
+    }
 
-    if (!session) {
+    if (!session?.user?.id) {
       return new UnauthorizedError();
     }
   }
 
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
+  } catch (error) {
+    return error instanceof Error
+      ? error
+      : new Error("Database connection failed");
+  }
 
   return { params: validatedParams, session };
 }

@@ -285,7 +285,11 @@
 @utility placeholder {
   @apply placeholder:text-light-400 dark:placeholder:text-light-500;
 }
-
+@utility hash-span {
+  margin-top: -140px;
+  padding-bottom: 140px;
+  display: block;
+}
 @utility invert-colors {
   @apply invert dark:invert-0;
 }
