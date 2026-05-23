@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Controller,
-  DefaultValues,
-  FieldValues,
-  Path,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-import * as z from "zod";
+import { Controller, Path, SubmitHandler, useForm } from "react-hook-form";
 import {
   Field,
   FieldError,
@@ -16,38 +8,41 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ZodType } from "zod";
+
 import { ROUTES } from "@/constants/routes";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { ActionResponse } from "@/types";
+import { ActionResponse, SignInValues, SignUpValues } from "@/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SignInSchema, SignUpSchema } from "@/lib/zod";
 
-interface AuthFormProps<T extends FieldValues> {
-  schema: ZodType<T>;
-  defaultValues: T;
-  onSubmit: (data: T) => Promise<ActionResponse>;
+interface AuthFormProps {
+  schema: typeof SignInSchema | typeof SignUpSchema;
+  defaultValues: SignInValues | SignUpValues;
+  onSubmit: (data: SignInValues | SignUpValues) => Promise<ActionResponse>;
   formType: "SignIn" | "SignUp";
 }
-const AuthForm = <T extends FieldValues>({
+const AuthForm = ({
   formType,
   schema,
   onSubmit,
   defaultValues,
-}: AuthFormProps<T>) => {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof schema>>({
+}: AuthFormProps) => {
+  const form = useForm({
     resolver: zodResolver(schema),
-    defaultValues: defaultValues as DefaultValues<T>,
+    defaultValues: defaultValues,
   });
 
+  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
-  const handleSubmit: SubmitHandler<T> = async (data) => {
+  const handleSubmit: SubmitHandler<SignInValues | SignUpValues> = async (
+    data
+  ) => {
     const result = (await onSubmit(data)) as ActionResponse;
 
     if (result?.success) {
@@ -77,7 +72,7 @@ const AuthForm = <T extends FieldValues>({
         {Object.keys(defaultValues).map((values) => (
           <Controller
             key={values}
-            name={values as Path<T>}
+            name={values as Path<SignInValues | SignUpValues>}
             control={form.control}
             render={({ field, fieldState }) => (
               <Field

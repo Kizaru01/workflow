@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SignInSchema, SignUpSchema } from "./lib/zod";
 
 interface QuestionCardProps {
   question: Question;
@@ -53,6 +54,8 @@ interface SignInWithOAuthParams {
     image: string;
   };
 }
+type SignInValues = z.infer<typeof SignInSchema>;
+type SignUpValues = z.infer<typeof SignUpSchema>;
 
 interface AuthCredentials {
   name: string;
