@@ -51,10 +51,6 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         toast.success("Success", {
           description: "Your answer has been posted succesfully",
         });
-
-        if (editorRef.current) {
-          editorRef.current.setMarkdown("");
-        }
       } else {
         toast.error("Failed", {
           description: "An error occured while posting your answer",

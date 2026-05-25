@@ -51,7 +51,9 @@ export async function createAnswer(
       data: JSON.parse(JSON.stringify(newAnswer)),
     };
   } catch (error) {
-    await session.abortTransaction();
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
