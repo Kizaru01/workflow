@@ -25,10 +25,12 @@ interface Props {
   questionContent: string;
 }
 const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
-  const editorRef = useRef<MDXEditorMethods>(null);
   const [isAnswer, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
   const session = useSession();
+
+  const editorRef = useRef<MDXEditorMethods>(null);
+
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
@@ -36,7 +38,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof AnswerSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
     startAnsweringTransition(async () => {
       const result = await createAnswer({
         questionId,
@@ -44,13 +46,11 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
       });
 
       if (result.success) {
+        form.reset();
+
         toast.success("Success", {
           description: "Your answer has been posted succesfully",
         });
-
-        if (editorRef.current) {
-          editorRef.current.setMarkdown("");
-        }
       } else {
         toast.error("Failed", {
           description: "An error occured while posting your answer",
@@ -58,6 +58,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
       }
     });
   };
+
   const generateAIAnswer = async () => {
     if (session.status !== "authenticated") {
       return toast.info("Please Log in", {
@@ -65,11 +66,13 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
       });
     }
     setIsAISubmitting(true);
+    const userAnswer = editorRef.current?.getMarkdown();
 
     try {
       const { success, data, error } = await api.ai.getAnswer(
         questionTitle,
-        questionContent
+        questionContent,
+        userAnswer
       );
 
       if (!success) {
@@ -137,7 +140,10 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         </Button>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-10 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="mt-10 space-y-6"
+      >
         <FieldGroup>
           <Controller
             name="content"
