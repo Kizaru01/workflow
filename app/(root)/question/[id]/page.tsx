@@ -4,6 +4,7 @@ import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
+import Votes from "@/components/votes/Votes";
 
 import { ROUTES } from "@/constants/routes";
 import { getAnswer } from "@/lib/queries/answer.query";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/queries/question.query";
 import { formatNumber, formatPHTimeAgo } from "@/lib/utils";
 import { RoutesParams, Tags } from "@/types";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
@@ -68,7 +70,12 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
             </Link>
           </div>
           <div className="flex justify-end">
-            <p>Votes</p>
+            <Votes
+              upvotes={question.upvotes}
+              hasupVoted={true}
+              downVotes={question.downvotes}
+              hasdownVoted={false}
+            />
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-4 w-full">

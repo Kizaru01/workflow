@@ -40,10 +40,10 @@ const QuestionCard = ({
       <div className="items-center flex justify-between mt-6 w-full flex-wrap gap-4">
         <Metric
           imgUrl={author?.image}
-          alt={author.name}
-          value={author.name}
+          alt={author?.name}
+          value={author?.name}
           title={`• asked ${formatPHTimeAgo(createdAt)}`}
-          href={ROUTES.PROFILE(author._id)}
+          href={ROUTES.PROFILE(author?._id)}
           textStyles="flex items-center gap-4 justify-start "
           isAuthor
           titleStyles="max-sm:hidden"
