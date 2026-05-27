@@ -108,3 +108,12 @@ interface GetAllAnswerParams {
   content: string;
   createdAt: Date;
 }
+
+interface CreateVoteParams {
+  targetId: string;
+  targetType: "question" | "answer";
+  voteType: "upVote" | "downVote";
+}
+interface UpdateVoteCountParams extends CreateVoteParams {
+  change: 1 | -1;
+}

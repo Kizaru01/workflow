@@ -17,7 +17,7 @@ const Votes = ({ upvotes, hasupVoted, downVotes, hasdownVoted }: Props) => {
   const userId = session.data?.user?.id;
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleVote = (voteType: "upvote" | "downVote") => {
+  const handleVote = (voteType: "upVote" | "downVote") => {
     if (!userId) {
       return toast.info("Please login to vote", {
         description: "Only logged-in users can vote",
@@ -28,7 +28,7 @@ const Votes = ({ upvotes, hasupVoted, downVotes, hasdownVoted }: Props) => {
 
     try {
       const successMessage =
-        voteType === "upvote"
+        voteType === "upVote"
           ? `Upvote ${!hasupVoted ? "added" : "removed"} successfully`
           : `Downvote ${!hasdownVoted ? "added" : "removed"} successfully`;
 
@@ -54,7 +54,7 @@ const Votes = ({ upvotes, hasupVoted, downVotes, hasdownVoted }: Props) => {
           alt="upvote"
           className={`cursor-pointer ${isLoading && "opacity-50"}`}
           aria-label="Upvote"
-          onClick={() => !isLoading && handleVote("upvote")}
+          onClick={() => !isLoading && handleVote("upVote")}
         />
 
         <div className="flex-center background-light700_dark400 min-w-5 rounded-sm p-1 ">
