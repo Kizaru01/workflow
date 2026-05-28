@@ -112,8 +112,13 @@ interface GetAllAnswerParams {
 interface CreateVoteParams {
   targetId: string;
   targetType: "question" | "answer";
-  voteType: "upVote" | "downVote";
+  voteType: "upvote" | "downvote";
 }
 interface UpdateVoteCountParams extends CreateVoteParams {
   change: 1 | -1;
+}
+type HasVotedParams = Pick<CreateVoteParams, "targetType" | "targetId">;
+interface HasVotedResponse {
+  hasUpvoted: boolean;
+  hasDownvoted: boolean;
 }
