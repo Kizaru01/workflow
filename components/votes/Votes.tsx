@@ -56,7 +56,7 @@ const Votes = ({
           ? `Upvote ${!hasUpvoted ? "added" : "removed"} successfully`
           : `Downvote ${!hasDownvoted ? "added" : "removed"} successfully`;
 
-      toast.success(successMessage, {
+      toast.info(successMessage, {
         description: "Your vote has been recorded",
       });
     } catch (error) {
