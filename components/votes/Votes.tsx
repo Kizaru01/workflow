@@ -9,7 +9,7 @@ import { use, useState } from "react";
 import { toast } from "sonner";
 interface Props {
   upvotes: number;
-  downVotes: number;
+  downvotes: number;
   hasVotedPromise: Promise<ActionResponse<HasVotedResponse>>;
   targetType: "question" | "answer";
   targetId: string;
@@ -17,7 +17,7 @@ interface Props {
 
 const Votes = ({
   upvotes,
-  downVotes,
+  downvotes,
   hasVotedPromise,
   targetType,
   targetId,
@@ -106,7 +106,7 @@ const Votes = ({
 
         <div className="flex-center background-light700_dark400 min-w-5 rounded-sm p-1 ">
           <p className="subtle-medium text-dark400_light900 ">
-            {formatNumber(downVotes)}
+            {formatNumber(downvotes)}
           </p>
         </div>
       </div>

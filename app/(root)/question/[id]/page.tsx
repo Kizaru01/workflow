@@ -79,7 +79,7 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
             <Suspense fallback={<div> loading...</div>}>
               <Votes
                 upvotes={question.upvotes}
-                downVotes={question.downvotes}
+                downvotes={question.downvotes}
                 hasVotedPromise={hasVotedPromise}
                 targetType="question"
                 targetId={question._id}
