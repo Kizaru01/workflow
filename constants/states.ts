@@ -51,3 +51,7 @@ export const EMPTY_ANSWERS = {
   title: "No answers found",
   message: "The answers is empty. Be the first answer.",
 };
+export const EMPTY_USERS = {
+  title: "No Users found",
+  message: "You're ALONE. The only one but more users is coming!.",
+};

@@ -12,13 +12,7 @@ interface Props {
   otherClasses?: string;
   iconPosition?: "left" | "right";
 }
-const LocalSearch = ({
-  route,
-  imgSrc,
-  placeholder,
-  otherClasses,
-  iconPosition = "left",
-}: Props) => {
+const LocalSearch = ({ route, imgSrc, placeholder, otherClasses }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
@@ -64,7 +58,7 @@ const LocalSearch = ({
         placeholder={placeholder}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border-none paragraph-regular no-focus shadow-none outline-none placeholder text-dark400_light700 bg-transparent"
+        className="border-none paragraph-regular no-focus shadow-none outline-none placeholder text-dark400_light700 bg-transparent w-full"
       />
     </div>
   );

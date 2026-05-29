@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { SignInSchema, SignUpSchema } from "./lib/zod";
 
+interface QuestionId {
+  questionId: string;
+}
 interface QuestionCardProps {
   question: Question;
 }
@@ -134,4 +137,8 @@ interface UserParams {
   bio?: string;
   portfolio?: string;
   reputation?: number;
+}
+
+interface CollectionBaseParams {
+  questionId: string;
 }

@@ -145,3 +145,6 @@ export const HasVotedSchema = CreateVoteSchema.pick({
   targetId: true,
   targetType: true,
 });
+export const CollectionBaseSchema = z.object({
+  questionId: objectIdSchema("Collection Id"),
+});
