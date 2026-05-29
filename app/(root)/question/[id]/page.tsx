@@ -3,10 +3,12 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
+import SaveQuestion from "@/components/questions/SaveQuestion";
 import UserAvatar from "@/components/UserAvatar";
 import Votes from "@/components/votes/Votes";
 
 import { ROUTES } from "@/constants/routes";
+import { hasSavedQuestion } from "@/lib/actions/collection.action";
 import { hasVoted } from "@/lib/actions/vote.action";
 import { getAnswer } from "@/lib/queries/answer.query";
 import {
@@ -57,6 +59,9 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
     targetId: question._id,
     targetType: "question",
   });
+  const hasSavedQuestionPromise = hasSavedQuestion({
+    questionId: question._id,
+  });
   const { author, createdAt, answers, views, tags, title, content } = question;
   return (
     <>
@@ -75,7 +80,7 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
               </p>
             </Link>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end items-center gap-4">
             <Suspense fallback={<div> loading...</div>}>
               <Votes
                 upvotes={question.upvotes}
@@ -83,6 +88,12 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
                 hasVotedPromise={hasVotedPromise}
                 targetType="question"
                 targetId={question._id}
+              />
+            </Suspense>
+            <Suspense fallback={<div>loading...</div>}>
+              <SaveQuestion
+                questionId={question._id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
               />
             </Suspense>
           </div>
