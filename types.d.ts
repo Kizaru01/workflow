@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { SignInSchema, SignUpSchema } from "./lib/zod";
 
+interface QuestionId {
+  questionId: string;
+}
 interface QuestionCardProps {
   question: Question;
 }
@@ -83,7 +86,7 @@ interface GetQuestionParams {
 }
 interface PaginatedSearchParams {
   page?: number;
-  pageSize: number;
+  pageSize?: number;
   query?: string;
   filter?: string;
   sort?: string;
@@ -107,4 +110,40 @@ interface GetAllAnswerParams {
   author: Author;
   content: string;
   createdAt: Date;
+  upvotes: number;
+  downvotes: number;
+}
+
+interface CreateVoteParams {
+  targetId: string;
+  targetType: "question" | "answer";
+  voteType: "upvote" | "downvote";
+}
+interface UpdateVoteCountParams extends CreateVoteParams {
+  change: 1 | -1;
+}
+type HasVotedParams = Pick<CreateVoteParams, "targetType" | "targetId">;
+interface HasVotedResponse {
+  hasUpvoted: boolean;
+  hasDownvoted: boolean;
+}
+interface UserParams {
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  location?: string;
+  image?: string;
+  bio?: string;
+  portfolio?: string;
+  reputation?: number;
+}
+
+interface CollectionBaseParams {
+  questionId: string;
+}
+interface CollectionParams {
+  _id: string;
+  author: Author | string;
+  question: QuestionProps;
 }

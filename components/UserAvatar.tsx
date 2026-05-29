@@ -26,14 +26,13 @@ const UserAvatar = ({
     .slice(0, 2);
   return (
     <Link href={ROUTES.PROFILE(id)}>
-      <Avatar className={className}>
+      <Avatar className={cn("relative", className)}>
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={name}
             className="object-cover rounded-full"
-            width={36}
-            height={36}
+            fill
             quality={100}
           />
         ) : (

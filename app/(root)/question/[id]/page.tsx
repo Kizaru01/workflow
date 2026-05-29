@@ -3,9 +3,13 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
+import SaveQuestion from "@/components/questions/SaveQuestion";
 import UserAvatar from "@/components/UserAvatar";
+import Votes from "@/components/votes/Votes";
 
 import { ROUTES } from "@/constants/routes";
+import { hasSavedQuestion } from "@/lib/actions/collection.action";
+import { hasVoted } from "@/lib/actions/vote.action";
 import { getAnswer } from "@/lib/queries/answer.query";
 import {
   getQuestion,
@@ -13,9 +17,11 @@ import {
 } from "@/lib/queries/question.query";
 import { formatNumber, formatPHTimeAgo } from "@/lib/utils";
 import { RoutesParams, Tags } from "@/types";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
+import { Suspense } from "react";
 const QuestionDetailsPage = async ({ params }: RoutesParams) => {
   const { id } = await params;
 
@@ -49,6 +55,13 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
     filter: "latest",
   });
 
+  const hasVotedPromise = hasVoted({
+    targetId: question._id,
+    targetType: "question",
+  });
+  const hasSavedQuestionPromise = hasSavedQuestion({
+    questionId: question._id,
+  });
   const { author, createdAt, answers, views, tags, title, content } = question;
   return (
     <>
@@ -67,8 +80,22 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
               </p>
             </Link>
           </div>
-          <div className="flex justify-end">
-            <p>Votes</p>
+          <div className="flex justify-end items-center gap-4">
+            <Suspense fallback={<div> loading...</div>}>
+              <Votes
+                upvotes={question.upvotes}
+                downvotes={question.downvotes}
+                hasVotedPromise={hasVotedPromise}
+                targetType="question"
+                targetId={question._id}
+              />
+            </Suspense>
+            <Suspense fallback={<div>loading...</div>}>
+              <SaveQuestion
+                questionId={question._id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
+              />
+            </Suspense>
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-4 w-full">
