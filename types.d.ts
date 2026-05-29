@@ -142,3 +142,8 @@ interface UserParams {
 interface CollectionBaseParams {
   questionId: string;
 }
+interface CollectionParams {
+  _id: string;
+  author: Author | string;
+  question: QuestionProps;
+}
