@@ -1,3 +1,5 @@
+"use server";
+
 import {
   ActionResponse,
   ErrorResponse,
@@ -92,7 +94,7 @@ export async function getTagQuestion(
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { page, pageSize, query, tagId } = validationResult.params!;
+  const { page = 1, pageSize = 10, query, tagId } = validationResult.params!;
 
   const skip = (Number(page) - 1) * pageSize;
   const limit = Number(pageSize);

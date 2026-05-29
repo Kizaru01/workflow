@@ -83,7 +83,7 @@ interface GetQuestionParams {
 }
 interface PaginatedSearchParams {
   page?: number;
-  pageSize: number;
+  pageSize?: number;
   query?: string;
   filter?: string;
   sort?: string;
@@ -123,4 +123,15 @@ type HasVotedParams = Pick<CreateVoteParams, "targetType" | "targetId">;
 interface HasVotedResponse {
   hasUpvoted: boolean;
   hasDownvoted: boolean;
+}
+interface UserParams {
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  location?: string;
+  image?: string;
+  bio?: string;
+  portfolio?: string;
+  reputation?: number;
 }
