@@ -3,6 +3,7 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
+import Pagination from "@/components/Pagination";
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import UserAvatar from "@/components/UserAvatar";
 import Votes from "@/components/votes/Votes";
@@ -22,7 +23,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { Suspense } from "react";
-const QuestionDetailsPage = async ({ params }: RoutesParams) => {
+const QuestionDetailsPage = async ({ params, searchParams }: RoutesParams) => {
+  const { page, pageSize, filter } = await searchParams;
   const { id } = await params;
 
   const {
@@ -50,9 +52,9 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
     error: answerError,
   } = await getAnswer({
     questionId: id,
-    page: 1,
-    pageSize: 10,
-    filter: "latest",
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    filter,
   });
 
   const hasVotedPromise = hasVoted({
@@ -140,6 +142,8 @@ const QuestionDetailsPage = async ({ params }: RoutesParams) => {
       </div>
       <section className="my-6">
         <AllAnswers
+          page={page}
+          isNext={dataSuccess?.isNext || false}
           data={dataSuccess?.answers}
           success={answerSuccess}
           error={answerError}

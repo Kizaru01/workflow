@@ -134,7 +134,7 @@ export const AIAnswerSchema = z.object({
   userAnswer: z.string().optional(),
 });
 export const CreateVoteSchema = z.object({
-  targetId: z.string().min(1, "Target Id is required"),
+  targetId: objectIdSchema("Target Id"),
   targetType: z.enum(["question", "answer"], "Invalid target Type"),
   voteType: z.enum(["upvote", "downvote"], "Invalid Vote Type"),
 });
@@ -147,4 +147,7 @@ export const HasVotedSchema = CreateVoteSchema.pick({
 });
 export const CollectionBaseSchema = z.object({
   questionId: objectIdSchema("Collection Id"),
+});
+export const getUserIdSchema = z.object({
+  userId: objectIdSchema("User Id"),
 });

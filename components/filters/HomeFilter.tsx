@@ -39,7 +39,7 @@ const HomeFilter = () => {
     router.push(newUrl, { scroll: false });
   };
   return (
-    <div className="mt-4  flex-wrap gap-3 flex">
+    <div className="mt-4  flex-wrap gap-3 flex max-md:hidden">
       {filters.map((filter) => (
         <Button
           key={filter.value}

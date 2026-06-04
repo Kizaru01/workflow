@@ -25,6 +25,7 @@ interface QuestionProps {
 interface Tags {
   _id: string;
   name: string;
+  questions?: number;
 }
 interface Author {
   _id: string;
@@ -137,6 +138,7 @@ interface UserParams {
   bio?: string;
   portfolio?: string;
   reputation?: number;
+  createdAt: Date;
 }
 
 interface CollectionBaseParams {
@@ -146,4 +148,12 @@ interface CollectionParams {
   _id: string;
   author: Author | string;
   question: QuestionProps;
+}
+interface getUserIdParams {
+  userId: string;
+}
+interface BadgeCounts {
+  gold: number;
+  silver: number;
+  bronze: number;
 }

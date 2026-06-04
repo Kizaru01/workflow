@@ -135,3 +135,15 @@ export async function getTagQuestion(
     return handleError(error) as ErrorResponse;
   }
 }
+export async function getHotTags(): Promise<ActionResponse<Tags[]>> {
+  try {
+    const getTags = await Tag.find().sort({ questions: -1 }).limit(5);
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(getTags)),
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}

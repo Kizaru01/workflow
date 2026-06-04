@@ -200,3 +200,19 @@ export async function editQuestion(
     await session.endSession();
   }
 }
+
+export async function HotQuestions(): Promise<ActionResponse<[QuestionProps]>> {
+  try {
+    const questions = await Question.find()
+      .sort({ createdAt: -1, views: -1 })
+      .limit(5)
+      .lean();
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(questions)),
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
