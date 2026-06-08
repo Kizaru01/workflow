@@ -25,6 +25,7 @@ interface QuestionProps {
 interface Tags {
   _id: string;
   name: string;
+  questions?: number;
 }
 interface Author {
   _id: string;
@@ -112,6 +113,7 @@ interface GetAllAnswerParams {
   createdAt: Date;
   upvotes: number;
   downvotes: number;
+  isProfile: boolean;
 }
 
 interface CreateVoteParams {
@@ -137,6 +139,7 @@ interface UserParams {
   bio?: string;
   portfolio?: string;
   reputation?: number;
+  createdAt: Date;
 }
 
 interface CollectionBaseParams {
@@ -146,4 +149,22 @@ interface CollectionParams {
   _id: string;
   author: Author | string;
   question: QuestionProps;
+}
+interface getUserIdParams {
+  userId: string;
+}
+interface BadgeCounts {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+}
+
+interface GetUserQuestionsParams extends Omit<
+  PaginatedSearchParams,
+  "query" | "filter" | "sort"
+> {
+  userId: string;
+}
+interface GetUserAnswerParams extends PaginatedSearchParams {
+  userId: string;
 }

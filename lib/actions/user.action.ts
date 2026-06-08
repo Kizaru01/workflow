@@ -2,15 +2,27 @@
 
 import {
   ActionResponse,
+  AnswerParams,
   ErrorResponse,
+  GetAllAnswerParams,
+  GetUserAnswerParams,
+  getUserIdParams,
+  GetUserQuestionsParams,
   PaginatedSearchParams,
+  QuestionProps,
   UserParams,
 } from "@/types";
-import { PaginatedSearchSchema } from "../zod";
+import {
+  GetUserAnswerSchema,
+  getUserIdSchema,
+  GetUserQuestionSchema,
+  PaginatedSearchSchema,
+} from "../zod";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { User } from "@/database";
+import { Answer, Question, User } from "@/database";
 import mongoose from "mongoose";
+import { NotFoundError } from "../http-errors";
 
 export async function getUsers(
   params: PaginatedSearchParams
@@ -47,6 +59,7 @@ export async function getUsers(
       break;
     case "popular":
       sortCriteria = { reputation: -1 };
+      break;
     default:
       sortCriteria = { createdAt: -1 };
       break;
@@ -66,6 +79,122 @@ export async function getUsers(
       success: true,
       data: {
         users: JSON.parse(JSON.stringify(users)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getUserId(params: getUserIdParams): Promise<
+  ActionResponse<{
+    user: UserParams;
+    totalQuestions: number;
+    totalAnswers: number;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: getUserIdSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { userId } = validationResult.params!;
+
+  try {
+    const user = await User.findById(userId).lean();
+    if (!user) throw new NotFoundError("User");
+
+    const [totalQuestions, totalAnswers] = await Promise.all([
+      Question.countDocuments({ author: userId }),
+      Answer.countDocuments({ author: userId }),
+    ]);
+
+    return {
+      success: true,
+      data: {
+        user,
+        totalQuestions,
+        totalAnswers,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+export async function getUserQuestion(
+  params: GetUserQuestionsParams
+): Promise<ActionResponse<{ questions: QuestionProps[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: GetUserQuestionSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+  const limit = Number(pageSize);
+  const skip = Number(page - 1) * pageSize;
+
+  try {
+    const totalQuestions = await Question.countDocuments({
+      author: userId,
+    });
+    const questions = await Question.find({ author: userId })
+      .populate("author", "name image")
+      .populate("tags", "name ")
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    const isNext = totalQuestions > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+        questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+export async function getUserAnswer(
+  params: GetUserAnswerParams
+): Promise<ActionResponse<{ answers: GetAllAnswerParams[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: GetUserAnswerSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+  const limit = Number(pageSize);
+  const skip = Number(page - 1) * pageSize;
+
+  try {
+    const totalAnswers = await Answer.countDocuments({
+      author: userId,
+    });
+    const answers = await Answer.find({ author: userId })
+      .populate("author", "name image")
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    const isNext = totalAnswers > skip + answers.length;
+
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
         isNext,
       },
     };

@@ -15,6 +15,7 @@ const AnswerCard = ({
   createdAt,
   upvotes,
   downvotes,
+  isProfile,
 }: GetAllAnswerParams) => {
   const hasVotedPromise = hasVoted({
     targetId: _id,
@@ -55,7 +56,7 @@ const AnswerCard = ({
           </Suspense>
         </div>
       </div>
-      <Preview content={content} />
+      <Preview profile={isProfile} content={content} />
     </article>
   );
 };
