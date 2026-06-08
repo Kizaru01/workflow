@@ -13,6 +13,7 @@ import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { Tag, Question } from "@/database";
 import mongoose from "mongoose";
+import connectToDatabase from "../mongoose";
 
 export async function getTags(
   params: PaginatedSearchParams
@@ -137,6 +138,8 @@ export async function getTagQuestion(
 }
 export async function getHotTags(): Promise<ActionResponse<Tags[]>> {
   try {
+    await connectToDatabase();
+
     const getTags = await Tag.find().sort({ questions: -1 }).limit(5);
 
     return {

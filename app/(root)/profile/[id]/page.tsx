@@ -1,15 +1,29 @@
 import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUserId } from "@/lib/actions/user.action";
+import {
+  getUserAnswer,
+  getUserId,
+  getUserQuestion,
+  getUsers,
+} from "@/lib/actions/user.action";
 import { RoutesParams } from "@/types";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Stats from "@/components/user/Stats";
+import { TabsList, TabsTrigger, TabsContent, Tabs } from "@/components/ui/tabs";
+import QuestionCard from "@/components/cards/QuestionCard";
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_QUESTION } from "@/constants/states";
+import { error } from "console";
+import { success } from "zod";
+import Pagination from "@/components/Pagination";
+import AnswerCard from "@/components/cards/AnswerCard";
 
-const ProfilePage = async ({ params }: RoutesParams) => {
+const ProfilePage = async ({ params, searchParams }: RoutesParams) => {
+  const { page, pageSize } = await searchParams;
   const { id } = await params;
 
   if (!id) notFound();
@@ -18,7 +32,26 @@ const ProfilePage = async ({ params }: RoutesParams) => {
   const { data } = await getUserId({ userId: id });
 
   const { user, totalQuestions, totalAnswers } = data!;
-
+  const {
+    success: getUserSuccess,
+    data: getUserData,
+    error: getUserError,
+  } = await getUserQuestion({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
+  const {
+    success: userAnswerSuccess,
+    data: userAnswerData,
+    error: userAnswerError,
+  } = await getUserAnswer({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 1,
+  });
+  const { answers, isNext: haveMoreAnswers } = userAnswerData!;
+  const { questions, isNext: haveMoreQuestions } = getUserData!;
   const {
     _id,
     name,
@@ -81,7 +114,73 @@ const ProfilePage = async ({ params }: RoutesParams) => {
           )}
         </div>
       </section>
-      <Stats totalQuestions={totalQuestions} totalAnswers={totalAnswers} />
+      <Stats
+        totalQuestions={totalQuestions}
+        totalAnswers={totalAnswers}
+        badges={{
+          GOLD: 0,
+          SILVER: 0,
+          BRONZE: 0,
+        }}
+      />
+      <section className="mt-10 flex gap-10">
+        <Tabs defaultValue="top-posts" className="flex-2">
+          <TabsList className="background-light700_dark400 min-h-[42px] p-1">
+            <TabsTrigger value="top-posts" className="tab">
+              Top Posts
+            </TabsTrigger>
+            <TabsTrigger value="answers" className="tab">
+              Answers
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6 "
+          >
+            <DataRenderer
+              success={getUserSuccess}
+              error={getUserError}
+              data={questions}
+              empty={EMPTY_QUESTION}
+              render={(questions) => (
+                <div className="flex w-full flex-col gap-6">
+                  {questions.map((question) => (
+                    <QuestionCard key={question._id} question={question} />
+                  ))}
+                </div>
+              )}
+            />
+
+            <Pagination page={page} isNext={haveMoreQuestions} />
+          </TabsContent>
+
+          <TabsContent
+            value="answers"
+            className="mt-5 flex w-full flex-cols gap-6 "
+          >
+            <DataRenderer
+              success={userAnswerSuccess}
+              error={userAnswerError}
+              data={answers}
+              empty={EMPTY_QUESTION}
+              render={(answers) => (
+                <div className="flex w-full flex-col gap-6">
+                  {answers.map((answer) => (
+                    <AnswerCard key={answer._id} {...answer} isProfile={true} />
+                  ))}
+                </div>
+              )}
+            />
+            <Pagination page={page} isNext={haveMoreAnswers} />
+          </TabsContent>
+        </Tabs>
+        <div className="flex w-full min-w-[250px] flex-1 flex-col max-lg:hidden">
+          <h3 className="h3-bold text-dark200_light_900">Top Tags</h3>
+          <div className="mt-7 flex flex-col gap-4">
+            <p className="">List of tags</p>
+          </div>
+        </div>
+      </section>
     </>
   );
 };

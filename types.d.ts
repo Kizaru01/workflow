@@ -113,6 +113,7 @@ interface GetAllAnswerParams {
   createdAt: Date;
   upvotes: number;
   downvotes: number;
+  isProfile: boolean;
 }
 
 interface CreateVoteParams {
@@ -153,7 +154,17 @@ interface getUserIdParams {
   userId: string;
 }
 interface BadgeCounts {
-  gold: number;
-  silver: number;
-  bronze: number;
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+}
+
+interface GetUserQuestionsParams extends Omit<
+  PaginatedSearchParams,
+  "query" | "filter" | "sort"
+> {
+  userId: string;
+}
+interface GetUserAnswerParams extends PaginatedSearchParams {
+  userId: string;
 }

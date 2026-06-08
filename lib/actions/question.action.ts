@@ -15,6 +15,7 @@ import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 import { ForbiddenError, NotFoundError } from "../http-errors";
+import connectToDatabase from "../mongoose";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -203,6 +204,8 @@ export async function editQuestion(
 
 export async function HotQuestions(): Promise<ActionResponse<[QuestionProps]>> {
   try {
+    await connectToDatabase();
+
     const questions = await Question.find()
       .sort({ createdAt: -1, views: -1 })
       .limit(5)

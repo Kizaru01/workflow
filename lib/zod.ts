@@ -151,3 +151,10 @@ export const CollectionBaseSchema = z.object({
 export const getUserIdSchema = z.object({
   userId: objectIdSchema("User Id"),
 });
+export const GetUserQuestionSchema = PaginatedSearchSchema.extend({
+  userId: objectIdSchema("User Id"),
+});
+
+export const GetUserAnswerSchema = PaginatedSearchSchema.extend({
+  userId: objectIdSchema("User Id"),
+});

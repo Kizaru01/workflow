@@ -2,12 +2,22 @@
 
 import {
   ActionResponse,
+  AnswerParams,
   ErrorResponse,
+  GetAllAnswerParams,
+  GetUserAnswerParams,
   getUserIdParams,
+  GetUserQuestionsParams,
   PaginatedSearchParams,
+  QuestionProps,
   UserParams,
 } from "@/types";
-import { getUserIdSchema, PaginatedSearchSchema } from "../zod";
+import {
+  GetUserAnswerSchema,
+  getUserIdSchema,
+  GetUserQuestionSchema,
+  PaginatedSearchSchema,
+} from "../zod";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { Answer, Question, User } from "@/database";
@@ -76,6 +86,7 @@ export async function getUsers(
     return handleError(error) as ErrorResponse;
   }
 }
+
 export async function getUserId(params: getUserIdParams): Promise<
   ActionResponse<{
     user: UserParams;
@@ -108,6 +119,83 @@ export async function getUserId(params: getUserIdParams): Promise<
         user,
         totalQuestions,
         totalAnswers,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+export async function getUserQuestion(
+  params: GetUserQuestionsParams
+): Promise<ActionResponse<{ questions: QuestionProps[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: GetUserQuestionSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+  const limit = Number(pageSize);
+  const skip = Number(page - 1) * pageSize;
+
+  try {
+    const totalQuestions = await Question.countDocuments({
+      author: userId,
+    });
+    const questions = await Question.find({ author: userId })
+      .populate("author", "name image")
+      .populate("tags", "name ")
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    const isNext = totalQuestions > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+        questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+export async function getUserAnswer(
+  params: GetUserAnswerParams
+): Promise<ActionResponse<{ answers: GetAllAnswerParams[]; isNext: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: GetUserAnswerSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+  const limit = Number(pageSize);
+  const skip = Number(page - 1) * pageSize;
+
+  try {
+    const totalAnswers = await Answer.countDocuments({
+      author: userId,
+    });
+    const answers = await Answer.find({ author: userId })
+      .populate("author", "name image")
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    const isNext = totalAnswers > skip + answers.length;
+
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
+        isNext,
       },
     };
   } catch (error) {
