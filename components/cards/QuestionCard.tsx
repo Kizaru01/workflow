@@ -4,6 +4,7 @@ import Link from "next/link";
 import Metric from "../Metric";
 import TagCard from "./TagCard";
 import { QuestionCardProps, Tags } from "@/types";
+import EditDeleteAction from "../user/EditDeleteAction";
 
 const QuestionCard = ({
   question: {
@@ -17,11 +18,12 @@ const QuestionCard = ({
     views,
     downvotes,
   },
+  showActionBtns = false,
 }: QuestionCardProps) => {
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
-      <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row ">
-        <div>
+      <div className="flex flex-col-reverse items-center justify-between gap-5 sm:flex-row ">
+        <div className="flex-1">
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {formatPHTimeAgo(createdAt)}
           </span>
@@ -31,6 +33,7 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
+        {showActionBtns && <EditDeleteAction type="Question" itemId={_id} />}
       </div>
       <div className="mt-6 flex flex-wrap w-full gap-3">
         {tags.map((tag: Tags) => (

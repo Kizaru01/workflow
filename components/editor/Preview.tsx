@@ -12,13 +12,13 @@ const Preview = ({
   profile,
 }: {
   content: string;
-  profile: boolean;
+  profile?: boolean;
 }) => {
   const formattedContent = content.replace(/\\/g, "").replace(/&#x20;/g, "");
 
   return (
     <section className="markdown prose break-all">
-      <div className={profile ? "max-md:line-clamp-2 line-clamp-10" : ""}>
+      <div className={profile ? "line-clamp-5" : ""}>
         <MDXRemote
           source={formattedContent}
           components={{

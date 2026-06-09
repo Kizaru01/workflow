@@ -6,6 +6,7 @@ interface QuestionId {
 }
 interface QuestionCardProps {
   question: Question;
+  showActionBtns?: boolean;
 }
 
 interface QuestionProps {
@@ -26,6 +27,7 @@ interface Tags {
   _id: string;
   name: string;
   questions?: number;
+  count?: number;
 }
 interface Author {
   _id: string;
@@ -114,6 +116,7 @@ interface GetAllAnswerParams {
   upvotes: number;
   downvotes: number;
   isProfile: boolean;
+  showActionBtns?: boolean;
 }
 
 interface CreateVoteParams {
@@ -167,4 +170,13 @@ interface GetUserQuestionsParams extends Omit<
 }
 interface GetUserAnswerParams extends PaginatedSearchParams {
   userId: string;
+}
+interface GetUserTopTagsParams {
+  userId: string;
+}
+interface GetUserDeleteQuestionParams {
+  questionId: string;
+}
+interface GetDeleteAnswerParams {
+  answerId: string;
 }
