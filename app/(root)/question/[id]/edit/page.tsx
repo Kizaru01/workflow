@@ -29,12 +29,6 @@ const EditQuestion = async ({ params }: RoutesParams) => {
   }
 
   if (String(question.author._id) !== session.user?.id) {
-    console.error("Unauthorized edit attempt", {
-      questionId: question._id,
-      ownerId: String(question.author._id),
-      currentUserId: session.user?.id,
-    });
-
     redirect(ROUTES.QUESTION(id));
   }
   return (

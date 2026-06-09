@@ -7,6 +7,7 @@ import Preview from "../editor/Preview";
 import { Suspense } from "react";
 import Votes from "../votes/Votes";
 import { hasVoted } from "@/lib/actions/vote.action";
+import EditDeleteAction from "../user/EditDeleteAction";
 
 const AnswerCard = ({
   _id,
@@ -16,14 +17,18 @@ const AnswerCard = ({
   upvotes,
   downvotes,
   isProfile,
+  showActionBtns = false,
 }: GetAllAnswerParams) => {
   const hasVotedPromise = hasVoted({
     targetId: _id,
     targetType: "answer",
   });
   return (
-    <article className="light-border border-b  bg-gray-900 p-4 mt-4 rounded-xl">
+    <article className="light-border border-b  bg-gray-900 p-4 mt-4 rounded-xl relative">
       <span id={JSON.stringify(_id)} className="hash-span" />
+      <div className="absolute right-2 top-2">
+        {showActionBtns && <EditDeleteAction itemId={_id} type="Answer" />}
+      </div>
       <div className="mb-5 flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <div className="flex flex-1 items-start gap-1 sm:items-center">
           <UserAvatar

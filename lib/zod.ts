@@ -158,3 +158,12 @@ export const GetUserQuestionSchema = PaginatedSearchSchema.extend({
 export const GetUserAnswerSchema = PaginatedSearchSchema.extend({
   userId: objectIdSchema("User Id"),
 });
+export const GetUserTopTagsSchema = z.object({
+  userId: objectIdSchema("User Id"),
+});
+export const GetUserDeleteQuestionSchema = z.object({
+  questionId: objectIdSchema("Question Id"),
+});
+export const GetDeleteAnswerSchema = z.object({
+  answerId: objectIdSchema("Answer Id"),
+});
