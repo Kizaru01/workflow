@@ -132,6 +132,7 @@ const ProfilePage = async ({ params, searchParams }: RoutesParams) => {
           SILVER: 0,
           BRONZE: 0,
         }}
+        reputationPoints={reputation || 0}
       />
       <section className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-2">

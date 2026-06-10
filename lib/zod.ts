@@ -1,3 +1,4 @@
+import { InteractionActionEnums } from "@/database/interaction.model";
 import * as z from "zod";
 
 const objectIdSchema = (fieldName: string) =>
@@ -166,4 +167,10 @@ export const GetUserDeleteQuestionSchema = z.object({
 });
 export const GetDeleteAnswerSchema = z.object({
   answerId: objectIdSchema("Answer Id"),
+});
+export const CreateInteractionSchema = z.object({
+  action: z.enum(InteractionActionEnums),
+  actionTarget: z.enum(["question", "answer"]),
+  actionId: z.string().min(1),
+  authorId: z.string().min(1),
 });

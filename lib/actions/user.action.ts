@@ -279,10 +279,12 @@ export async function userDeleteQuestion(
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
+  
   const userId = validationResult.session?.user?.id;
   const { questionId } = validationResult.params!;
 
   const session = await mongoose.startSession();
+
   try {
     session.startTransaction();
 
