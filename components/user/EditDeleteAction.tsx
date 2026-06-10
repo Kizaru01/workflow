@@ -14,7 +14,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { userDeleteQuestion } from "@/lib/actions/user.action";
-import { getDeleteAnswer } from "@/lib/actions/answer.action";
+import { userDeleteAnswer } from "@/lib/actions/answer.action";
 interface Props {
   type: "Question" | "Answer";
   itemId: string;
@@ -34,7 +34,7 @@ const EditDeleteAction = ({ itemId, type }: Props) => {
 
       return;
     } else if (type === "Answer") {
-      await getDeleteAnswer({ answerId: itemId });
+      await userDeleteAnswer({ answerId: itemId });
       toast.success("Delete", {
         description: "Answer deleted",
       });

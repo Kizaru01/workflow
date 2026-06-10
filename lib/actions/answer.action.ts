@@ -64,7 +64,7 @@ export async function createAnswer(
     await session.endSession();
   }
 }
-export async function getDeleteAnswer(
+export async function userDeleteAnswer(
   params: GetDeleteAnswerParams
 ): Promise<ActionResponse> {
   const validationResult = await action({
@@ -82,6 +82,7 @@ export async function getDeleteAnswer(
 
   try {
     const answer = await Answer.findById(answerId);
+
     if (!answer) throw new Error("Answer not found");
 
     if (answer.author.toString() !== userId)
