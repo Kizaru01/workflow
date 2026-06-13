@@ -1,4 +1,4 @@
-import { InteractionActionEnums } from "@/database/interaction.model";
+import { InteractionActionEnums } from "@/constants/interaction";
 import * as z from "zod";
 
 const objectIdSchema = (fieldName: string) =>
@@ -149,7 +149,7 @@ export const HasVotedSchema = CreateVoteSchema.pick({
 export const CollectionBaseSchema = z.object({
   questionId: objectIdSchema("Collection Id"),
 });
-export const getUserIdSchema = z.object({
+export const GetUserIdSchema = z.object({
   userId: objectIdSchema("User Id"),
 });
 export const GetUserQuestionSchema = PaginatedSearchSchema.extend({

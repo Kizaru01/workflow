@@ -15,6 +15,8 @@ import mongoose, { ClientSession } from "mongoose";
 import { Answer, Question, Vote } from "@/database";
 import { revalidatePath } from "next/cache";
 import { ROUTES } from "@/constants/routes";
+import { after } from "next/server";
+import { createInteraction } from "./interaction.action";
 
 export async function createVote(
   params: CreateVoteParams
@@ -92,7 +94,14 @@ export async function createVote(
         session
       );
     }
-
+    after(async () => {
+      await createInteraction({
+        action: voteType,
+        actionId: targetId,
+        actionTarget: targetType,
+        authorId: userId,
+      });
+    });
     await session.commitTransaction();
     session.endSession();
 

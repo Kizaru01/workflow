@@ -3,7 +3,7 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
-import Pagination from "@/components/Pagination";
+
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import UserAvatar from "@/components/UserAvatar";
 import Votes from "@/components/votes/Votes";

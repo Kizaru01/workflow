@@ -1,3 +1,5 @@
+"use server";
+
 import mongoose from "mongoose";
 
 import { Interaction, User } from "@/database";
@@ -12,6 +14,7 @@ import {
   ErrorResponse,
   UpdateReputationParams,
 } from "@/types";
+import { calculateReputation } from "../reputation";
 
 export async function createInteraction(
   params: CreateInteractionParams
@@ -38,6 +41,14 @@ export async function createInteraction(
   session.startTransaction();
 
   try {
+    const existingInteraction = await Interaction.exists({
+      user: userId,
+      action: actionType,
+      actionId,
+    }).session(session);
+
+    if (existingInteraction) throw new Error("Interaction already exists");
+
     const [interaction] = await Interaction.create(
       [
         {
@@ -57,9 +68,13 @@ export async function createInteraction(
       performerId: userId!,
       authorId,
     });
+
     await session.commitTransaction();
 
-    return { success: true, data: JSON.parse(JSON.stringify(interaction)) };
+    return {
+      success: true,
+      data: interaction.toObject(),
+    };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;
@@ -69,27 +84,10 @@ export async function createInteraction(
 }
 async function updateReputation(params: UpdateReputationParams) {
   const { interaction, session, performerId, authorId } = params;
-  const { action, actionType } = interaction;
+  const { action: interactionAction, actionType } = interaction;
 
-  let performerPoints = 0;
-  let authorPoints = 0;
-
-  switch (action) {
-    case "upvote":
-      performerPoints = 2;
-      authorPoints = 10;
-      break;
-    case "downvote":
-      performerPoints = -1;
-      authorPoints = -2;
-      break;
-    case "post":
-      authorPoints = actionType === "question" ? 5 : 10;
-      break;
-    case "delete":
-      authorPoints = actionType === "question" ? -5 : -10;
-      break;
-  }
+  const { performer: performerPoints, author: authorPoints } =
+    calculateReputation(interactionAction, actionType);
 
   if (performerId === authorId) {
     await User.findByIdAndUpdate(

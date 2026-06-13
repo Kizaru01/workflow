@@ -2,11 +2,12 @@
 
 import {
   ActionResponse,
+  BadgeCounts,
   ErrorResponse,
   GetAllAnswerParams,
   GetUserAnswerParams,
   GetUserDeleteQuestionParams,
-  getUserIdParams,
+  GetUserIdParams,
   GetUserQuestionsParams,
   GetUserTopTagsParams,
   PaginatedSearchParams,
@@ -16,7 +17,7 @@ import {
 import {
   GetUserAnswerSchema,
   GetUserDeleteQuestionSchema,
-  getUserIdSchema,
+  GetUserIdSchema,
   GetUserQuestionSchema,
   GetUserTopTagsSchema,
   PaginatedSearchSchema,
@@ -33,8 +34,8 @@ import {
   Collection,
 } from "@/database";
 import mongoose, { PipelineStage, Types } from "mongoose";
-import { NotFoundError } from "../http-errors";
 import { revalidatePath } from "next/cache";
+import { assignBadges } from "../utils";
 
 export async function getUsers(
   params: PaginatedSearchParams
@@ -98,39 +99,98 @@ export async function getUsers(
     return handleError(error) as ErrorResponse;
   }
 }
-
-export async function getUserId(params: getUserIdParams): Promise<
+export async function getUser(params: GetUserIdParams): Promise<
   ActionResponse<{
     user: UserParams;
-    totalQuestions: number;
-    totalAnswers: number;
   }>
 > {
   const validationResult = await action({
     params,
-    schema: getUserIdSchema,
+    schema: GetUserIdSchema,
   });
 
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
-  const { userId } = validationResult.params!;
+
+  const { userId } = params;
 
   try {
-    const user = await User.findById(userId).lean();
-    if (!user) throw new NotFoundError("User");
-
-    const [totalQuestions, totalAnswers] = await Promise.all([
-      Question.countDocuments({ author: userId }),
-      Answer.countDocuments({ author: userId }),
-    ]);
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
 
     return {
       success: true,
       data: {
-        user,
-        totalQuestions,
-        totalAnswers,
+        user: JSON.parse(JSON.stringify(user)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+export async function getUserStats(params: GetUserIdParams): Promise<
+  ActionResponse<{
+    totalQuestions: number;
+    totalAnswers: number;
+    badges: BadgeCounts;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserIdSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = validationResult.params!;
+
+  try {
+    const [questionStats = { count: 0, upvotes: 0, views: 0 }] =
+      await Question.aggregate([
+        { $match: { author: new Types.ObjectId(userId) } },
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+            upvotes: { $sum: "$upvotes" },
+            views: { $sum: "$views" },
+          },
+        },
+      ]);
+
+    const [answerStats = { count: 0, upvotes: 0, views: 0 }] =
+      await Answer.aggregate([
+        { $match: { author: new Types.ObjectId(userId) } },
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+            upvotes: { $sum: "$upvotes" },
+          },
+        },
+      ]);
+
+    const badges = assignBadges({
+      criteria: [
+        { type: "ANSWER_COUNT", count: answerStats.count },
+        { type: "QUESTION_COUNT", count: questionStats.count },
+        {
+          type: "QUESTION_UPVOTES",
+          count: questionStats.upvotes + answerStats.upvotes,
+        },
+        { type: "TOTAL_VIEWS", count: questionStats.views },
+      ],
+    });
+
+    return {
+      success: true,
+      data: {
+        totalQuestions: questionStats.count,
+        totalAnswers: answerStats.count,
+        badges,
       },
     };
   } catch (error) {
@@ -279,7 +339,7 @@ export async function userDeleteQuestion(
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
-  
+
   const userId = validationResult.session?.user?.id;
   const { questionId } = validationResult.params!;
 
