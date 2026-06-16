@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import CommonFilter from "@/components/filters/CommonFilter";
@@ -7,11 +8,14 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { CollectionFilters } from "@/constants/filter";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getSavedCollection } from "@/lib/actions/collection.action";
+import { redirect } from "next/navigation";
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 const Collection = async ({ searchParams }: SearchParams) => {
+  const session = await auth();
+  if (!session) return redirect("/sign-in");
   const { page, pageSize, query, filter } = await searchParams;
 
   const { success, data, error } = await getSavedCollection({

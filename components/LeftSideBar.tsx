@@ -17,7 +17,7 @@ const LeftSideBar = ({ user }: Props) => {
   const userId = user?.id;
 
   return (
-    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-85.5">
+    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-65.5">
       <div className="flex flex-1 flex-col gap-6">
         <NavLinks userId={userId} />
       </div>
@@ -28,13 +28,13 @@ const LeftSideBar = ({ user }: Props) => {
               "use server";
               await signOut();
             }}
-            className="flex items-center justify-center"
+            className="flex items-center justify-start"
           >
             <Button
               type="submit"
               className="base-medium w-fit !bg-transparent px-4 py-3"
             >
-              <LogOut className="size-5 text-black dark:text-white" />
+              <LogOut className=" text-black dark:text-white" />
               <span className="max-lg:hidden text-dark300_light900">
                 Logout
               </span>

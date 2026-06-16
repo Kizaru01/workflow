@@ -15,8 +15,9 @@ import { GetQuestionSchema, PaginatedSearchSchema } from "../zod";
 import mongoose from "mongoose";
 import { auth } from "@/auth";
 import { getRecommendedQuestions } from "../actions/question.action";
+import { cache } from "react";
 
-export async function getQuestion(
+export const getQuestion = cache(async function getQuestion(
   params: GetQuestionParams
 ): Promise<ActionResponse<QuestionProps>> {
   const validationResult = await action({
@@ -44,7 +45,8 @@ export async function getQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
+
 export async function getQuestions(
   params: PaginatedSearchParams
 ): Promise<ActionResponse<{ questions: QuestionProps[]; isNext: boolean }>> {
