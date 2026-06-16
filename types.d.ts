@@ -153,7 +153,7 @@ interface CollectionParams {
   author: Author | string;
   question: QuestionProps;
 }
-interface getUserIdParams {
+interface GetUserIdParams {
   userId: string;
 }
 interface BadgeCounts {
@@ -199,4 +199,10 @@ interface UpdateReputationParams {
   session: mongoose.ClientSession;
   performerId: string;
   authorId: string;
+}
+interface RecommendationParams {
+  userId: string;
+  query?: string;
+  skip: number;
+  limit: number;
 }

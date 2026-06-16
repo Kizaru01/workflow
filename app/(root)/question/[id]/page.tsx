@@ -3,7 +3,7 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
-import Pagination from "@/components/Pagination";
+
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import UserAvatar from "@/components/UserAvatar";
 import Votes from "@/components/votes/Votes";
@@ -18,11 +18,28 @@ import {
 } from "@/lib/queries/question.query";
 import { formatNumber, formatPHTimeAgo } from "@/lib/utils";
 import { RoutesParams, Tags } from "@/types";
+import { Metadata } from "next";
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { Suspense } from "react";
+
+export async function generateMetadata({
+  params,
+}: RoutesParams): Promise<Metadata> {
+  const { id } = await params;
+
+  const { success, data: question } = await getQuestion({ questionId: id });
+
+  if (!success || !question) return {};
+
+  return {
+    title: question.title,
+    description: question.content.slice(0, 100),
+  };
+}
+
 const QuestionDetailsPage = async ({ params, searchParams }: RoutesParams) => {
   const { page, pageSize, filter } = await searchParams;
   const { id } = await params;

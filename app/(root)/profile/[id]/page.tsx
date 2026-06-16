@@ -2,9 +2,10 @@ import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
 import {
+  getUser,
   getUserAnswer,
-  getUserId,
   getUserQuestion,
+  getUserStats,
   getUserTopTags,
 } from "@/lib/actions/user.action";
 import { RoutesParams, Tags } from "@/types";
@@ -29,9 +30,19 @@ const ProfilePage = async ({ params, searchParams }: RoutesParams) => {
   if (!id) notFound();
 
   const isLoggedInUser = await auth();
-  const { data } = await getUserId({ userId: id });
+  const { data, success, error } = await getUser({ userId: id });
+  if (!success)
+    return (
+      <div className="flex flex-col items-center justify-center gap-4">
+        <h1 className="h1-bold text-dark100_light900">User not found</h1>
+        <p className="paragraph-regular text-dark200_light800 max-w-md">
+          {error?.message}
+        </p>
+      </div>
+    );
 
-  const { user, totalQuestions, totalAnswers } = data!;
+  const { user } = data!;
+  const { data: userStats } = await getUserStats({ userId: id });
   const {
     success: getUserSuccess,
     data: getUserData,
@@ -117,7 +128,7 @@ const ProfilePage = async ({ params, searchParams }: RoutesParams) => {
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           {isLoggedInUser?.user?.id === id && (
             <Link href="/profile/edit">
-              <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-12 min-w-44 px-4 py-3">
+              <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-12 min-w-44 px-4 py-3 ">
                 Edit Profile
               </Button>
             </Link>
@@ -125,13 +136,9 @@ const ProfilePage = async ({ params, searchParams }: RoutesParams) => {
         </div>
       </section>
       <Stats
-        totalQuestions={totalQuestions}
-        totalAnswers={totalAnswers}
-        badges={{
-          GOLD: 0,
-          SILVER: 0,
-          BRONZE: 0,
-        }}
+        totalQuestions={userStats?.totalQuestions || 0}
+        totalAnswers={userStats?.totalAnswers || 0}
+        badges={userStats?.badges || { GOLD: 0, SILVER: 0, BRONZE: 0 }}
         reputationPoints={reputation || 0}
       />
       <section className="mt-10 flex gap-10">
