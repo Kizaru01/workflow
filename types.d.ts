@@ -206,3 +206,43 @@ interface RecommendationParams {
   skip: number;
   limit: number;
 }
+
+interface CreateJobParams {
+  title: string;
+  description: string;
+  workLocation: string;
+  salaryMin: number;
+  salaryMax: number;
+  jobType: "fulltime" | "parttime" | "contract";
+  workMode: "remote" | "onsite" | "hybrid";
+  experienceLevel: "entry" | "mid" | "senior";
+  tags: string[];
+}
+
+interface GetJobsParams extends PaginatedSearchParams {
+  filter?: string;
+}
+interface JobsParams {
+  _id: string;
+  title: string;
+  description: string;
+  workLocation: string;
+  salaryMin: number;
+  salaryMax: number;
+  jobType: string;
+  workMode: string;
+  experienceLevel: string;
+  tags: string[];
+  views: number;
+  applicants: number;
+  company: Author;
+  createdAt: string;
+}
+type Jobs = JobsParams;
+
+interface JobCardProps {
+  job: Jobs;
+}
+interface GetJobIdParams {
+  jobId: string;
+}

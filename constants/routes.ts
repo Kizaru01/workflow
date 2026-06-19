@@ -10,4 +10,6 @@ export const ROUTES = {
   TAG: (id: string) => `/tags/${id}`,
   ASK_QUESTION: "/ask-question",
   QUESTION: (id: string) => `/question/${id}`,
+  CREATEJOB: "/jobs/create",
+  JOBS_ID: (id: string) => `/jobs/${id}`,
 };

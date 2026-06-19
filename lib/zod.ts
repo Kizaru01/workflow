@@ -174,3 +174,45 @@ export const CreateInteractionSchema = z.object({
   actionId: z.string().min(1),
   authorId: z.string().min(1),
 });
+
+export const CreateJobSchema = z
+  .object({
+    title: z
+      .string()
+      .min(1, "Job title is required.")
+      .max(150, "Job title must be less than 150 characters."),
+    description: z
+      .string()
+      .min(10, "Description must be at least 10 characters.")
+      .max(5000, "Description is too long."),
+    workLocation: z
+      .string()
+      .min(1, "Work location is required.")
+      .max(100, "Work location must be less than 100 characters."),
+    salaryMin: z
+      .number()
+      .positive("Minimum salary must be a positive number.")
+      .or(z.literal(0)),
+    salaryMax: z
+      .number()
+      .positive("Maximum salary must be a positive number.")
+      .or(z.literal(0)),
+    jobType: z.enum(["fulltime", "parttime", "contract"]),
+    workMode: z.enum(["remote", "onsite", "hybrid"]),
+    experienceLevel: z.enum(["entry", "mid", "senior"]),
+    tags: z
+      .array(z.string().trim().min(1, "Tag is required."))
+      .min(1, "At least one tag is required.")
+      .max(5, "Maximum 5 tags allowed."),
+  })
+  .refine((data) => data.salaryMax >= data.salaryMin, {
+    message: "Maximum salary must be greater than or equal to minimum salary.",
+    path: ["salaryMax"],
+  });
+
+export const GetJobsSchema = PaginatedSearchSchema.extend({
+  filter: z.string().optional(),
+});
+export const GetJobIdSchema = z.object({
+  jobId: objectIdSchema("Job Id"),
+});
