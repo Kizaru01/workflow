@@ -60,6 +60,14 @@ export const formatNumber = (number: number) => {
     return number.toString();
   }
 };
+
+export const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
 export function assignBadges(params: {
   criteria: {
     type: keyof typeof BADGE_CRITERIA;

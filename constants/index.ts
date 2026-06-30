@@ -38,19 +38,19 @@ export const sidebarLinks = [
 ];
 export const BADGE_CRITERIA = {
   QUESTION_COUNT: {
-    BRONZE: 10,
-    SILVER: 50,
-    GOLD: 100,
+    BRONZE: 5,
+    SILVER: 10,
+    GOLD: 30,
   },
   ANSWER_COUNT: {
     BRONZE: 10,
-    SILVER: 50,
-    GOLD: 100,
+    SILVER: 20,
+    GOLD: 50,
   },
   QUESTION_UPVOTES: {
     BRONZE: 10,
     SILVER: 50,
-    GOLD: 100,
+    GOLD: 75,
   },
   ANSWER_UPVOTES: {
     BRONZE: 10,

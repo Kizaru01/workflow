@@ -7,6 +7,7 @@ import Tag from "./tag.model";
 import TagQuestion from "./tag-question.model";
 import User from "./user.model";
 import Vote from "./vote.model";
+import Job from "./job.model";
 
 export {
   Account,
@@ -18,4 +19,5 @@ export {
   TagQuestion,
   User,
   Vote,
+  Job,
 };
