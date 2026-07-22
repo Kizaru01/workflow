@@ -32,7 +32,7 @@ const LeftSideBar = ({ user }: Props) => {
           >
             <Button
               type="submit"
-              className="base-medium w-fit !bg-transparent px-4 py-3"
+              className="base-medium w-fit bg-transparent! px-4 py-3"
             >
               <LogOut className=" text-black dark:text-white" />
               <span className="max-lg:hidden text-dark300_light900">

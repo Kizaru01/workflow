@@ -80,7 +80,6 @@ export async function getJobs(
       ];
     }
 
-    // Apply filters from JobFilters
     if (filter) {
       switch (filter) {
         case "fulltime":

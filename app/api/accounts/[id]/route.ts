@@ -6,6 +6,7 @@ import { AccountSchema } from "@/lib/zod";
 import { auth } from "@/auth";
 import { Types } from "mongoose";
 import { NextResponse } from "next/server";
+import { APIErrorResponse } from "@/types";
 
 export const runtime = "nodejs";
 
@@ -67,10 +68,10 @@ export async function GET(_request: Request, context: AccountRouteContext) {
         data: account,
         message: "Account fetched successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
-    return handleError(error, "api") as NextResponse;
+    return handleError(error, "api") as APIErrorResponse;
   }
 }
 
@@ -128,7 +129,10 @@ export async function PUT(request: Request, context: AccountRouteContext) {
         .exec();
 
       if (duplicateAccount) {
-        throw new RequestError(409, "Account with this provider already exists");
+        throw new RequestError(
+          409,
+          "Account with this provider already exists"
+        );
       }
     }
 
@@ -145,7 +149,7 @@ export async function PUT(request: Request, context: AccountRouteContext) {
         data: updatedAccount,
         message: "Account updated successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     return handleError(error, "api") as NextResponse;
@@ -181,7 +185,7 @@ export async function DELETE(_request: Request, context: AccountRouteContext) {
         data: { id },
         message: "Account deleted successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     return handleError(error, "api") as NextResponse;

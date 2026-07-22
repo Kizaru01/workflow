@@ -3,7 +3,7 @@ import handleError from "@/lib/handlers/error";
 import { NotFoundError, ValidationError } from "@/lib/http-errors";
 import connectToDatabase from "@/lib/mongoose";
 import { AccountSchema } from "@/lib/zod";
-import { APIResponse } from "@/types";
+import { APIErrorResponse } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -40,6 +40,6 @@ export async function POST(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    return handleError(error, "api") as APIResponse;
+    return handleError(error, "api") as APIErrorResponse;
   }
 }

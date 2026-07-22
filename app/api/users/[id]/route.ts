@@ -56,7 +56,7 @@ export async function GET(_request: Request, context: UserRouteContext) {
         data: user,
         message: "User fetched successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     return handleError(error, "api") as NextResponse;
@@ -119,7 +119,7 @@ export async function PUT(request: Request, context: UserRouteContext) {
         data: updatedUser,
         message: "User updated successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     return handleError(error, "api") as NextResponse;
@@ -147,7 +147,7 @@ export async function DELETE(_request: Request, context: UserRouteContext) {
         data: { id },
         message: "User deleted successfully",
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     return handleError(error, "api") as NextResponse;

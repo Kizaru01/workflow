@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Theme } from "@/components/navigation/navbar/Theme";
-import { auth } from "@/auth";
 import Mobile from "./Mobile";
 import UserAvatar from "@/components/UserAvatar";
 interface Props {

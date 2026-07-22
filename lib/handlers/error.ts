@@ -53,12 +53,18 @@ function formatResponse(
     : { status, ...responseContent };
 }
 
-function handleError(error: unknown, responseType: "api"): NextResponse<ErrorContent>;
-function handleError(error: unknown, responseType?: "server"): ServerErrorResponse;
+function handleError(
+  error: unknown,
+  responseType: "api"
+): NextResponse<ErrorContent>;
+function handleError(
+  error: unknown,
+  responseType?: "server"
+): ServerErrorResponse;
 function handleError(error: unknown, responseType: ResponseType = "server") {
   if (error instanceof RequestError) {
     logger.error(
-      { err: error },
+      { err: error, statusCode: error.statusCode },
       `${responseType.toUpperCase()} Error: ${error.message}`
     );
 
@@ -76,7 +82,7 @@ function handleError(error: unknown, responseType: ResponseType = "server") {
     );
 
     logger.error(
-      { err: error },
+      { err: error, statusCode: validationError.statusCode },
       `Validation Error: ${validationError.message}`
     );
 
@@ -89,11 +95,11 @@ function handleError(error: unknown, responseType: ResponseType = "server") {
   }
 
   if (error instanceof Error) {
-    logger.error({ err: error }, error.message);
+    logger.error({ err: error, statusCode: 500 }, error.message);
     return formatResponse(responseType, 500, "Internal server error");
   }
 
-  logger.error({ err: error }, "An unexpected error occurred");
+  logger.error({ err: error, statusCode: 500 }, "An unexpected error occurred");
   return formatResponse(responseType, 500, "An unexpected error occurred");
 }
 

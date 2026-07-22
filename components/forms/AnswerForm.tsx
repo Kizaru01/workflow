@@ -15,6 +15,7 @@ import { createAnswer } from "@/lib/actions/answer.action";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
@@ -28,7 +29,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   const [isAnswer, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
   const session = useSession();
-
+  const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
@@ -39,6 +40,10 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   });
 
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
+    if (session.status !== "authenticated") {
+      return router.push("/sign-in");
+    }
+
     startAnsweringTransition(async () => {
       const result = await createAnswer({
         questionId,

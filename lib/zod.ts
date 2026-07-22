@@ -18,7 +18,7 @@ const emailSchema = z
   .email("Invalid email format.")
   .trim()
   .toLowerCase()
-  .min(1, "Email required")
+  .min(1, "Email is required")
   .max(254, "Email is too long."); // RFC standard
 
 const passwordSchema = z
